@@ -177,7 +177,18 @@ function essentials(w){if(w.pos==='noun')return w.plural&&w.plural!=='—'?`Plur
   if(w.pattern)return w.pattern;return typeName[w.pos]||w.pos||'—';
 }
 function makeTable(){const ids=selectedIds();const total=ui.tab==='today'?getLesson().wordIds.length:allWordIds().length;
-  const body=ids.map((id,i)=>{const w=state.words[id];const mark=progress(id).status;return `<tr data-id="${escapeHTML(id)}" tabindex="0" aria-label="Open ${escapeHTML(w.de)} details"><td class="pinned"><div class="wordname">${deHTML(w.de)}<\/div><div class="word-sub">${statusDot(id)} ${track(id)==='medical'?'🩺 Medical':escapeHTML(typeName[w.pos]||w.pos)+' · '+(learningMode(id)==='active'?'Active':'Passive')}${progress(id).goalMode==='active'?' ↑ promoted':''} · ${escapeHTML(w.importance||'practical')} ${mark!=='new'?'· '+escapeHTML(mark):''}<\/div><\/td><td class="essential"><span class="wordmeta">${escapeHTML(essentials(w))}<\/span><\/td><td class="translation">${escapeHTML(w.mm)}<\/td>${ui.view==='full'?`<td class="example">${escapeHTML(w.example||'—')}<\/td>`:''}<\/tr>`}).join('');
+  let previousGroup='';
+  const grouped=ui.tab==='today'&&getLesson().id==='day1'&&ui.group==='all'&&ui.sort==='study'&&!ui.search&&!ui.onlyWeak;
+  const body=ids.map((id,i)=>{const w=state.words[id];const mark=progress(id).status;
+    const group=track(id)==='medical'?'medical':w.mode==='active'?'active':'passive';
+    let header='';
+    if(grouped&&group!==previousGroup){
+     const label=group==='medical'?'03 · 🩺 Medical Extra · 8 words':group==='active'?'01 · General Active · 25 words':'02 · General Passive · 35 words';
+     const sub=group==='medical'?'Patient German + Clinical German':group==='active'?'Produce sentences':'Read and understand';
+     header='<tr class="vocab-section-row"><td class="pinned">'+escapeHTML(label)+'</td><td colspan="'+(ui.view==='full'?'3':'2')+'">'+escapeHTML(sub)+'</td></tr>';
+     previousGroup=group;
+    }
+    return header+`<tr data-id="${escapeHTML(id)}" tabindex="0" aria-label="Open ${escapeHTML(w.de)} details"><td class="pinned"><div class="wordname">${deHTML(w.de)}<\/div><div class="word-sub">${statusDot(id)} ${track(id)==='medical'?'🩺 Medical':escapeHTML(typeName[w.pos]||w.pos)+' · '+(learningMode(id)==='active'?'Active':'Passive')}${progress(id).goalMode==='active'?' ↑ promoted':''} · ${escapeHTML(w.importance||'practical')} ${mark!=='new'?'· '+escapeHTML(mark):''}<\/div><\/td><td class="essential"><span class="wordmeta">${escapeHTML(essentials(w))}<\/span><\/td><td class="translation">${escapeHTML(w.mm)}<\/td>${ui.view==='full'?`<td class="example">${escapeHTML(w.example||'—')}<\/td>`:''}<\/tr>`}).join('');
   return `<section class="card table-card section"><div class="table-title between"><div><strong>Vocabulary at a glance<\/strong><div class="subtle" style="font-size:11px;margin-top:2px">${ids.length} visible · ${total} total<\/div><\/div><span class="chip">↔ Swipe sideways<\/span><\/div><div class="table-scroll" id="tableScroll" tabindex="0" aria-label="Horizontally scrollable vocabulary table"><table class="vocab-table"><thead><tr><th class="pinned">German word<\/th><th class="essential">Essential info<\/th><th class="translation">မြန်မာ Translation<\/th>${ui.view==='full'?'<th class="example">Example sentence<\/th>':''}<\/tr><\/thead><tbody>${body||`<tr><td colspan="${ui.view==='full'?4:3}" class="empty">No words match these filters.<\/td><\/tr>`}<\/tbody><\/table><\/div><div class="hint-strip">German word stays pinned on the left. Tap any row to read details, then use Back / Next.<\/div><\/section>`}
 function renderStudy(){const l=getLesson(),s=stats(),ids=l.wordIds,read=ids.filter(studied).length,percent=Math.round(read/Math.max(1,ids.length)*100),recentId=state.positions[l.id],resume=recentId&&state.words[recentId];
 
