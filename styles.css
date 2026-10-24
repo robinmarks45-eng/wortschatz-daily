@@ -52,7 +52,7 @@
 [data-theme="dark"] .day1-shortcut.medical-shortcut strong{color:#ffcc9d}
 
 /* v5: accessible iPhone vocabulary list, grammar filters, persistent font zoom */
-:root{--list-word-size:17px}
+:root{--list-word-size:18px}
 .filter-line{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
 .filter-label{font-size:12px;color:var(--muted);font-weight:780;white-space:nowrap;padding-top:11px;min-width:78px}
 .pos-filter,.article-filter{flex-wrap:wrap;max-width:100%;gap:4px}
