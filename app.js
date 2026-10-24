@@ -117,7 +117,7 @@ async function syncCatalog(manual=false,repairDay1=false){
    render();toast(ui.syncMessage);
   }else{
    ui.syncMessage='Up to date · '+new Date().toLocaleString();
-   if(manual||repairDay1)toast('Day 1 and lessons are up to date');
+   if(manual||repairDay1)toast('Published lessons are up to date');
   }
  }catch(e){
   ui.syncMessage='Lesson check failed: '+String(e.message||e);
@@ -209,7 +209,7 @@ function essentials(w){if(w.pos==='noun')return w.plural&&w.plural!=='—'?`Plur
 }
 function makeTable(){const ids=selectedIds();const total=ui.tab==='today'?getLesson().wordIds.length:allWordIds().length;
   let previousGroup='';
-  const grouped=ui.tab==='today'&&getLesson().id==='day1'&&ui.group==='all'&&ui.sort==='study'&&!ui.search&&!ui.onlyWeak;
+  const grouped=ui.tab==='today'&&/^day[0-9]+$/.test(getLesson().id)&&ui.group==='all'&&ui.sort==='study'&&!ui.search&&!ui.onlyWeak;
   const body=ids.map((id,i)=>{const w=state.words[id];const mark=progress(id).status;
     const group=track(id)==='medical'?'medical':w.mode==='active'?'active':'passive';
     let header='';
@@ -224,14 +224,15 @@ function makeTable(){const ids=selectedIds();const total=ui.tab==='today'?getLes
 function renderStudy(){const l=getLesson(),s=stats(),ids=l.wordIds,read=ids.filter(studied).length,percent=Math.round(read/Math.max(1,ids.length)*100),recentId=state.positions[l.id],resume=recentId&&state.words[recentId];
 
   const isDay1=ui.tab==='today'&&l.id==='day1';
+  const isPublishedDay=ui.tab==='today'&&/^day[0-9]+$/.test(l.id);
   const ga=ids.filter(id=>state.words[id]&&track(id)==='general'&&state.words[id].mode==='active').length;
   const gp=ids.filter(id=>state.words[id]&&track(id)==='general'&&state.words[id].mode==='passive').length;
   const medical=ids.filter(id=>state.words[id]&&track(id)==='medical');
   const ma=medical.filter(id=>state.words[id].mode==='active').length;
   const incomplete=isDay1&&(ids.length!==68||ga!==25||gp!==35||medical.length!==8||ma!==3);
-  const daySummary=!isDay1?'':(
+  const daySummary=!isPublishedDay?'':(
    '<section class="card section day1-overview">'+
-   '<div class="day1-overview-head"><h2>Day 1 · 68 words</h2><p>General 60 + Medical 8 — Choose a section to read</p></div>'+
+   '<div class="day1-overview-head"><h2>'+escapeHTML(l.day)+' · '+ids.length+' words</h2><p>General 60 + Medical 8 — Choose a section to read</p></div>'+
    '<div class="day1-shortcuts">'+
    '<button class="day1-shortcut" data-group="active"><small>01 · GENERAL</small><strong>Active '+ga+'/25</strong><span>Speak and write</span></button>'+
    '<button class="day1-shortcut" data-group="passive"><small>02 · GENERAL</small><strong>Passive '+gp+'/35</strong><span>Read and understand</span></button>'+
@@ -245,7 +246,7 @@ function renderStudy(){const l=getLesson(),s=stats(),ids=l.wordIds,read=ids.filt
    '<button class="button primary slim" data-action="repairDay1">↻ Repair Day 1</button>'+
    '<div class="subtle">Existing notes, review progress and active promotions stay on this device.</div></div>');
 
-  return `<div class="hero"><div class="eyebrow">${ui.tab==='library'?'My vocabulary library':'Daily vocabulary · List-first learning'}<\/div><h1>${ui.tab==='library'?'All your words, one place.':isDay1?'Day 1 · 68 vocabulary entries':'Read first. Recall later.'}<\/h1><p class="subtitle">${ui.tab==='library'?'Search every study day, open details, review notes.':'German + grammar + translation at a glance, followed by detailed reading.'}<\/p><\/div>
+  return `<div class="hero"><div class="eyebrow">${ui.tab==='library'?'My vocabulary library':'Daily vocabulary · List-first learning'}<\/div><h1>${ui.tab==='library'?'All your words, one place.':isPublishedDay?escapeHTML(l.day)+' · '+ids.length+' vocabulary entries':'Read first. Recall later.'}<\/h1><p class="subtitle">${ui.tab==='library'?'Search every study day, open details, review notes.':'German + grammar + translation at a glance, followed by detailed reading.'}<\/p><\/div>
   ${ui.storageError?'<div class="notice" id="storageNotice">⚠ Persistent device storage is unavailable. Your changes might not survive a restart. Do not rely on this as your only copy.<\/div>':''}
   ${repairNotice}${daySummary}
   <div class="grid grid-3">${counterCard(ui.tab==='today'?ids.length:s.total,'Vocabulary',ui.tab==='today'?l.day+' · '+ids.filter(id=>track(id)==='medical').length+' Medical':'All lessons')}${counterCard(ui.tab==='today'?read:s.read,'Studied','Marked/read')}${counterCard(s.due,'Review due','Needs recall')}<\/div>
