@@ -50,3 +50,43 @@
 [data-theme="dark"] .vocab-section-row td{background:#204c42!important;color:#e2fff0;border-bottom-color:#35695e!important}
 [data-theme="dark"] .day1-shortcut.medical-shortcut{background:#473427}
 [data-theme="dark"] .day1-shortcut.medical-shortcut strong{color:#ffcc9d}
+
+/* v5: accessible iPhone vocabulary list, grammar filters, persistent font zoom */
+:root{--list-word-size:17px}
+.filter-line{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.filter-label{font-size:12px;color:var(--muted);font-weight:780;white-space:nowrap;padding-top:11px;min-width:78px}
+.pos-filter,.article-filter{flex-wrap:wrap;max-width:100%;gap:4px}
+.pos-filter button,.article-filter button{font-size:13px;min-height:40px;padding:9px 13px}
+.article-filter .article-der{color:#2583b7}
+.article-filter .article-die{color:#b45c79}
+.article-filter .article-das{color:#178975}
+.article-filter button.active{font-weight:860;box-shadow:0 1px 6px rgba(0,0,0,.075)}
+.font-controls{align-items:center;gap:3px}
+.font-controls button{font-size:15px;min-height:40px;padding:8px 13px;font-weight:850}
+.font-size-value{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:37px;text-align:center;font-weight:750}
+.vocab-table td{font-size:calc(var(--list-word-size) - 2px);line-height:1.6}
+.vocab-table th{font-size:11px;line-height:1.4}
+.wordname{font-size:var(--list-word-size);line-height:1.5;font-weight:790}
+.word-sub{font-size:12px;line-height:1.45;display:block;overflow-wrap:anywhere;margin-top:5px}
+.wordmeta{font-size:calc(var(--list-word-size) - 2px);line-height:1.55}
+.vocab-table .translation{font-size:calc(var(--list-word-size) - 1px);line-height:1.7}
+.vocab-table .example{font-size:calc(var(--list-word-size) - 2px);line-height:1.6}
+.vocab-table th,.vocab-table td{padding:15px 14px}
+.vocab-table .pinned{min-width:180px;max-width:180px;width:180px}
+.vocab-table .essential{min-width:205px;max-width:205px;width:205px}
+.vocab-table .translation{min-width:218px;max-width:218px;width:218px}
+.vocab-table .example{min-width:300px;max-width:300px;width:300px}
+.vocab-section-row td{font-size:12px!important;line-height:1.45;padding-top:15px!important;padding-bottom:15px!important}
+.table-title strong{font-size:15px}
+@media(max-width:600px){
+ .filter-label{min-width:100%;padding-top:0;font-size:12px}
+ .filter-line{gap:5px}
+ .pos-filter button,.article-filter button{font-size:13px;padding:9px 12px;min-height:41px}
+ .vocab-table .pinned{min-width:170px;max-width:170px;width:170px}
+ .vocab-table .essential{min-width:205px;max-width:205px;width:205px}
+ .vocab-table .translation{min-width:220px;max-width:220px;width:220px}
+ .vocab-table th,.vocab-table td{padding:14px 12px}
+ .wordname{line-height:1.5}
+ .table-scroll{max-height:72dvh}
+ .toolbar{gap:13px}
+}
