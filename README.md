@@ -63,3 +63,14 @@ No OpenAI API required. The app **downloads** newly published days automatically
 ## iPhone installation
 
 Safari → open https://robinmarks45-eng.github.io/wortschatz-daily/ → Share → Add to Home Screen. If old UI persists after deployment, reopen/refresh while online so service worker v3 and app v3 can update.
+
+
+## Day 1 v4 — repair if the Medical words are missing
+
+Day 1 must contain **68 entries**: 25 General Active, 35 General Passive, and 8 Medical Extra (3 active, 5 passive). The first screen shows three section shortcuts; choose **🩺 Medical 8/8** to display the medical list immediately. The All list also contains three visible category headings.
+
+If a Home Screen installation previously cached the 60-word lesson, open the app with internet access and reload. The app compares **expectedWords: 68** and **expectedMedical: 8** from the lesson catalog against local IndexedDB. When counts differ, it downloads the canonical Day 1 again, even if the local revision number is already current. A visible **Repair Day 1** button appears if counts are incomplete; Settings also includes **Repair Day 1 (68 words)**.
+
+The repair migrates progress/notes for matching words and preserves previously studied words no longer in the main curriculum in an Archive. Don't uninstall the Home Screen app or clear Safari website data as a troubleshooting step before exporting a JSON backup, as personal learning data is stored locally.
+
+Manual deployment checks: verify `lessons/catalog.json` revision 4 and counts; `lessons/day1.json` revision 4 and 68 words; deploy updated `app.js?v=4`, `styles.css?v=4`, Service Worker v4. GitHub Pages publishing confirms site deployment, not all individual iOS cache states.
