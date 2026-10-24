@@ -12,3 +12,41 @@
 .ranking-weights>div{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line,#e6e9e8);padding:6px 0;font-size:13px}
 .ranking-weights strong{white-space:nowrap}
 .toolbar-group .segment{flex-wrap:wrap}
+
+/* v4: Day 1 at-a-glance structured Active / Passive / Medical groups */
+.day1-overview{padding:16px!important}
+.day1-overview-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin-bottom:12px}
+.day1-overview-head h2{font-size:16px;margin:0}
+.day1-overview-head p{margin:0;color:var(--muted,#66766d);font-size:12px}
+.day1-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.day1-shortcut{display:flex;flex-direction:column;text-align:left;gap:6px;padding:12px;border:1px solid var(--line,#d7dfdc);background:var(--surface,#fff);color:inherit;border-radius:12px;cursor:pointer;font:inherit;min-height:91px}
+.day1-shortcut small{font-size:10px;letter-spacing:.04em;font-weight:700;opacity:.68}
+.day1-shortcut strong{font-size:15px}
+.day1-shortcut span{font-size:11px;opacity:.77}
+.day1-shortcut:focus-visible{outline:3px solid #117a70;outline-offset:2px}
+.day1-shortcut:hover{border-color:#117a70}
+.day1-shortcut.medical-shortcut{border-color:#dfae7f;background:rgba(233,151,70,.10)}
+.day1-shortcut.medical-shortcut strong{color:#a15b2a}
+.day1-shortcut.current{box-shadow:0 0 0 2px #16836c inset}
+.medical-teaser{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 0;margin-top:13px;border-top:1px solid var(--line,#e5ebe9)}
+.medical-teaser strong{font-size:13px}
+.medical-teaser p{font-size:12px;opacity:.8;margin:5px 0 0;line-height:1.6}
+.medical-button{flex-shrink:0}
+.day1-repair{display:flex;gap:9px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.day1-repair button{white-space:nowrap}
+.day1-repair .subtle{width:100%;font-size:11px}
+.vocab-section-row td{background:#e9f3f0!important;color:#1f6156;font-size:11px;font-weight:700;letter-spacing:.012em;border-bottom:1px solid #c9ded6!important;padding-top:13px!important;padding-bottom:13px!important}
+.vocab-section-row td.pinned{z-index:3}
+.vocab-section-row td:first-child{white-space:normal}
+@media(max-width:600px){
+ .day1-overview{padding:13px!important}
+ .day1-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .day1-shortcut.medical-shortcut{grid-column:1/-1;min-height:75px}
+ .day1-shortcut{min-height:84px;padding:10px}
+ .day1-shortcut strong{font-size:14px}
+ .medical-teaser{flex-direction:column;align-items:stretch}
+ .medical-button{width:100%}
+}
+[data-theme="dark"] .vocab-section-row td{background:#204c42!important;color:#e2fff0;border-bottom-color:#35695e!important}
+[data-theme="dark"] .day1-shortcut.medical-shortcut{background:#473427}
+[data-theme="dark"] .day1-shortcut.medical-shortcut strong{color:#ffcc9d}
