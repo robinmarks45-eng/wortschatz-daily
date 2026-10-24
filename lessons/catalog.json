@@ -1,11 +1,35 @@
 {
   "schema": 1,
-  "description": "Public 68-word Day 1, including 8 Medical Extra. The app checks local word/medical counts on every online refresh, repairs incomplete caches, and preserves personal IndexedDB progress.",
+  "description": "Published 68-word German days (25 general active, 35 general passive, 8 medical). App checks catalog when online and imports new days while preserving local study progress.",
   "lessons": [
     {
       "id": "day1",
       "path": "lessons/day1.json",
       "revision": 4,
+      "releaseDate": "2026-10-25",
+      "expectedWords": 68,
+      "expectedMedical": 8,
+      "sections": [
+        {
+          "id": "general-active",
+          "count": 25
+        },
+        {
+          "id": "general-passive",
+          "count": 35
+        },
+        {
+          "id": "medical-extra",
+          "count": 8,
+          "active": 3,
+          "passive": 5
+        }
+      ]
+    },
+    {
+      "id": "day2",
+      "path": "lessons/day2.json",
+      "revision": 1,
       "releaseDate": "2026-10-25",
       "expectedWords": 68,
       "expectedMedical": 8,
