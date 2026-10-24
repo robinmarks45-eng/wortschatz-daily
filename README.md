@@ -83,3 +83,19 @@ The vocabulary toolbar offers **Word type: All types / Nouns / Verbs / Adj / Adv
 Vocabulary list text is now larger by default (**18 px German headwords**, previously 14 px), with increased Myanmar-translation size, row spacing and a wider frozen German column. Use **List text A− / A+** (15–22 px) to adjust it. The choice is saved in the browser's private IndexedDB settings. Changes do not erase notes, study progress or saved promotions.
 
 If an installed iPhone PWA still shows the old controls, open online, refresh and reopen; the deployment includes versioned JavaScript/CSS and a new service-worker cache.
+
+
+## Day 2 — A1 Foundation (published 2026-10-25)
+
+Day 2 adds **68 new entries** to Day 1's 68 (136 distinct German headwords/phrases overall): General Active 25, General Passive 35, Medical Active 3, Medical Passive 5. Topic: **Food, Time, Family, Travel & Basic Patient Questions**.
+
+- General Active verbs: `essen, trinken, lesen, schreiben, hören, sehen, fahren, nehmen, geben, schlafen`
+- Active adj/adverb: `schön, schnell, langsam, teuer, kalt, heute`
+- Active nouns: `der Tag, die Woche, der Morgen, der Abend, die Nacht`
+- Active function words: `oder, nicht, bitte, auch`
+- General Passive: 35 essential nouns on people, home, shopping, time and travel
+- Medical Extra: `atmen, schlucken, Haben Sie Allergien?, die Allergie, der Blutdruck, der Puls, die Wunde, die Atemnot`
+
+The file is `lessons/day2.json` and `lessons/catalog.json` must include an entry with `expectedWords:68` and `expectedMedical:8`. The App opens a newly published lesson on its first online import and shows Day 2's General/Medical sections. Existing Day 1 progress and notes remain stored locally. New and old words are checked against Day 1's German headwords after removing articles; no exact lemma collision exists in this release.
+
+Importance and frequency tags remain **editorial estimates**, not verified numeric corpora ranks. Day 2's 68 entries are stored publicly in GitHub, while personal annotations and progress still require local backup.
