@@ -1,12 +1,15 @@
 {
   "id": "day1",
   "day": "Day 1",
-  "topic": "A1 Foundation · Identity, Daily Life & Everyday Communication",
-  "revision": 2,
-  "selectionMethod": "Goethe A1 reference + editorial everyday-use priority; frequencyEstimate is qualitative, not corpus rank",
+  "topic": "A1 Foundation + 8 Medical German",
+  "revision": 3,
+  "selectionMethod": "Hybrid curriculum strategy: Goethe/CEFR 25%, spoken SUBTLEX-DE/FOLK 30%, written Leipzig/Duden 15%, practical usefulness 20%, grammar patterns 10%. These are proposed editorial weights, NOT computed per-word corpus-backed scores. No numerical frequency rank assigned.",
   "references": [
     "https://www.goethe.de/pro/relaunch/prf/zh/A1_SD1_Wortliste_02.pdf",
-    "https://www.wortschatz.uni-leipzig.de/en/documentation/faq"
+    "https://pubmed.ncbi.nlm.nih.gov/21768069/",
+    "https://agd.ids-mannheim.de/folk.shtml",
+    "https://www.wortschatz.uni-leipzig.de/en/documentation/faq",
+    "https://www.duden.de/hilfe/haeufigkeit"
   ],
   "words": [
     {
@@ -22,7 +25,10 @@
       "pattern": "sein + Nominativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-02",
@@ -37,7 +43,10 @@
       "pattern": "haben + Akkusativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-03",
@@ -52,7 +61,10 @@
       "pattern": "Wie heißen Sie?",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-04",
@@ -67,7 +79,10 @@
       "pattern": "kommen aus + Dativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-05",
@@ -82,7 +97,10 @@
       "pattern": "nach Hause gehen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-06",
@@ -97,7 +115,10 @@
       "pattern": "wohnen in + Dativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-07",
@@ -112,7 +133,10 @@
       "pattern": "Hausaufgaben machen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-08",
@@ -127,7 +151,10 @@
       "pattern": "Deutsch lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-09",
@@ -142,7 +169,10 @@
       "pattern": "brauchen + Akkusativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-10",
@@ -157,7 +187,10 @@
       "pattern": "sprechen mit + Dativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-11",
@@ -172,7 +205,10 @@
       "pattern": "Wie geht es dir?",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-12",
@@ -187,7 +223,10 @@
       "pattern": "neu ↔ alt",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-13",
@@ -202,7 +241,10 @@
       "pattern": "alt ↔ jung / neu (context)",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-14",
@@ -217,7 +259,10 @@
       "pattern": "groß ↔ klein",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-15",
@@ -232,7 +277,10 @@
       "pattern": "klein ↔ groß",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-16",
@@ -247,7 +295,10 @@
       "pattern": "müde sein",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-17",
@@ -262,7 +313,10 @@
       "pattern": "Mein Name ist ...",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-18",
@@ -277,7 +331,10 @@
       "pattern": "eine Frage stellen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-19",
@@ -292,7 +349,10 @@
       "pattern": "Zeit haben",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-20",
@@ -307,7 +367,10 @@
       "pattern": "einen Termin haben",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-21",
@@ -322,7 +385,10 @@
       "pattern": "ein Problem haben",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-22",
@@ -337,7 +403,10 @@
       "pattern": "und + coordinating conjunction",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-23",
@@ -352,7 +421,10 @@
       "pattern": "aber + main clause",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-24",
@@ -367,7 +439,10 @@
       "pattern": "mit + Dativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-25",
@@ -382,7 +457,10 @@
       "pattern": "für + Akkusativ",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "very_common"
+      "frequencyEstimate": "very_common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-26",
@@ -397,7 +475,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-27",
@@ -412,7 +493,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-28",
@@ -427,7 +511,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-29",
@@ -442,7 +529,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-30",
@@ -457,7 +547,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-31",
@@ -472,7 +565,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "der Vater",
@@ -487,7 +583,10 @@
       "id": "a1core-32",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "der Freund",
@@ -502,7 +601,10 @@
       "id": "a1core-33",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-34",
@@ -517,7 +619,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-35",
@@ -532,7 +637,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-36",
@@ -547,7 +655,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-37",
@@ -562,7 +673,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-38",
@@ -577,7 +691,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-39",
@@ -592,7 +709,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-40",
@@ -607,7 +727,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-41",
@@ -622,7 +745,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-42",
@@ -637,7 +763,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-43",
@@ -652,7 +781,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-44",
@@ -667,7 +799,10 @@
       "pattern": "zur Arbeit gehen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-45",
@@ -682,7 +817,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-46",
@@ -697,7 +835,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-47",
@@ -712,7 +853,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-48",
@@ -727,7 +871,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-49",
@@ -742,7 +889,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-50",
@@ -757,7 +907,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-51",
@@ -772,7 +925,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-52",
@@ -787,7 +943,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-53",
@@ -802,7 +961,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "id": "a1core-54",
@@ -817,7 +979,10 @@
       "pattern": "Nomen · Artikel + Plural lernen",
       "level": "A1 Foundation",
       "importance": "high",
-      "frequencyEstimate": "situational"
+      "frequencyEstimate": "situational",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "die Mutter",
@@ -832,7 +997,10 @@
       "id": "a1core-55",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "die Familie",
@@ -847,7 +1015,10 @@
       "id": "a1core-56",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "die Schule",
@@ -862,7 +1033,10 @@
       "id": "a1core-57",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "das Kind",
@@ -877,7 +1051,10 @@
       "id": "a1core-58",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "das Haus",
@@ -892,7 +1069,10 @@
       "id": "a1core-59",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
     },
     {
       "de": "das Buch",
@@ -907,7 +1087,188 @@
       "id": "a1core-60",
       "level": "A1 Foundation",
       "importance": "core",
-      "frequencyEstimate": "common"
+      "frequencyEstimate": "common",
+      "track": "general",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Qualitative prioritization; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-01",
+      "de": "messen",
+      "mm": "တိုင်းတာသည်",
+      "pos": "verb",
+      "mode": "active",
+      "forms": "ich messe · du misst · er misst",
+      "plural": "",
+      "pattern": "etwas messen (Akkusativ)",
+      "example": "Ich messe Ihren Blutdruck.",
+      "translation": "ကျွန်တော် လူကြီးမင်းရဲ့ သွေးပေါင်ချိန်ကို တိုင်းပါမယ်။",
+      "patientGerman": "Ich messe jetzt Ihren Blutdruck.",
+      "clinicalGerman": "Der Blutdruck wird regelmäßig gemessen.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-02",
+      "de": "untersuchen",
+      "mm": "လူနာကို စမ်းသပ်စစ်ဆေးသည်",
+      "pos": "verb",
+      "mode": "active",
+      "forms": "ich untersuche · du untersuchst · er untersucht",
+      "plural": "",
+      "pattern": "jemanden untersuchen (Akkusativ)",
+      "example": "Ich untersuche jetzt Ihren Bauch.",
+      "translation": "အခု လူကြီးမင်းရဲ့ ဝမ်းဗိုက်ကို စမ်းသပ်စစ်ဆေးပါမယ်။",
+      "patientGerman": "Darf ich Ihren Bauch untersuchen?",
+      "clinicalGerman": "Die Patientin wurde körperlich untersucht.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-03",
+      "de": "Wo tut es weh?",
+      "mm": "ဘယ်နေရာမှာ နာသလဲ။",
+      "pos": "phrase",
+      "mode": "active",
+      "forms": "tut weh · tat weh (separable verb: wehtun)",
+      "plural": "",
+      "pattern": "wehtun: Wo tut es weh?",
+      "example": "Wo tut es weh? – Hier am Rücken.",
+      "translation": "ဘယ်နေရာမှာ နာသလဲ။ – ဒီကျောဘက်မှာပါ။",
+      "patientGerman": "Wo genau tut es weh?",
+      "clinicalGerman": "Die Patientin berichtet über Schmerzen im Rücken.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-04",
+      "de": "der Schmerz",
+      "mm": "နာကျင်မှု / ကိုက်ခဲမှု",
+      "pos": "noun",
+      "mode": "passive",
+      "forms": "",
+      "plural": "die Schmerzen",
+      "pattern": "Schmerzen haben; starke Schmerzen",
+      "example": "Ich habe starke Schmerzen.",
+      "translation": "ကျွန်တော် အရမ်းနာနေပါတယ်။",
+      "patientGerman": "Haben Sie Schmerzen?",
+      "clinicalGerman": "Der Patient klagt über starke Schmerzen.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-05",
+      "de": "das Fieber",
+      "mm": "ကိုယ်အပူချိန်မြင့်၍ ဖျားခြင်း",
+      "pos": "noun",
+      "mode": "passive",
+      "forms": "",
+      "plural": "—",
+      "pattern": "Fieber haben; Fieber messen",
+      "example": "Das Kind hat Fieber.",
+      "translation": "ကလေးက ဖျားနေတယ်။",
+      "patientGerman": "Haben Sie Fieber?",
+      "clinicalGerman": "Die Patientin hat seit gestern Fieber.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-06",
+      "de": "der Husten",
+      "mm": "ချောင်းဆိုးခြင်း",
+      "pos": "noun",
+      "mode": "passive",
+      "forms": "",
+      "plural": "—",
+      "pattern": "Husten haben; trockener Husten",
+      "example": "Ich habe seit drei Tagen Husten.",
+      "translation": "ကျွန်တော် ချောင်းဆိုးတာ သုံးရက်ရှိပြီ။",
+      "patientGerman": "Haben Sie Husten?",
+      "clinicalGerman": "Der Patient berichtet über trockenen Husten.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-07",
+      "de": "die Übelkeit",
+      "mm": "ပျို့ခြင်း / အန်ချင်ခြင်း",
+      "pos": "noun",
+      "mode": "passive",
+      "forms": "",
+      "plural": "—",
+      "pattern": "an Übelkeit leiden; mir ist übel",
+      "example": "Mir ist übel.",
+      "translation": "ကျွန်တော် ပျို့နေတယ်။",
+      "patientGerman": "Ist Ihnen übel?",
+      "clinicalGerman": "Die Patientin klagt über Übelkeit.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
+    },
+    {
+      "id": "medical-d1-08",
+      "de": "der Schwindel",
+      "mm": "မူးဝေခြင်း / ခေါင်းမူးခြင်း",
+      "pos": "noun",
+      "mode": "passive",
+      "forms": "",
+      "plural": "—",
+      "pattern": "Schwindel haben; mir ist schwindelig",
+      "example": "Mir ist schwindelig.",
+      "translation": "ကျွန်တော် ခေါင်းမူးနေတယ်။",
+      "patientGerman": "Ist Ihnen schwindelig?",
+      "clinicalGerman": "Der Patient berichtet über Schwindel.",
+      "level": "A1–A2",
+      "importance": "core",
+      "frequencyEstimate": "situational",
+      "track": "medical",
+      "frequencyStatus": "editorial_estimate",
+      "rankingEvidence": "Clinical usefulness; no verified corpus rank"
     }
-  ]
+  ],
+  "rankingModel": {
+    "version": "hybrid-proposed-1",
+    "weights": {
+      "goetheCefr": 25,
+      "spokenSubtitleAndConversation": 30,
+      "writtenCorpus": 15,
+      "personalUsefulness": 20,
+      "grammarUtility": 10
+    },
+    "status": "qualitative_not_computed",
+    "note": "Words have editorial importance and frequency estimate tags; corpus frequencies were not imported/normalized or individually verified."
+  },
+  "dailyAllocation": {
+    "generalActive": 25,
+    "generalPassive": 35,
+    "medicalActive": 3,
+    "medicalPassive": 5
+  }
 }
