@@ -1,35 +1,65 @@
-# Wortschatz Daily — A1 Foundation
+# Wortschatz Daily — Local-first German Reader
 
-**Live iPhone PWA:** https://robinmarks45-eng.github.io/wortschatz-daily/
+**App:** https://robinmarks45-eng.github.io/wortschatz-daily/
 
-Independent List-first German vocabulary app (does not touch the original `wortschatz` repository).
+Independent app from https://github.com/robinmarks45-eng/wortschatz (original unchanged).
 
-## Learning design
+## Daily curriculum (from Day 1 revision 3)
 
-- **Day 1 (rev 2):** 60 foundational words — 25 Active + 35 Passive, progressively covering Goethe A1-style everyday communication.
-- "Importance" and "frequencyEstimate" are **editorial, qualitative tags**, not measured corpus rank scores. A1.1 and A1.2 boundaries differ among schools.
-- German word stays pinned when swiping the table horizontally; essential forms, Myanmar meaning and example occupy the next columns.
-- Tap for reader detail, Back/Next, pronunciation, grammar, notes and Weak/Studied/Known.
-- Learning data lives locally in IndexedDB; the app is usable offline after an online visit.
+**68 entries/day, 60 General + 8 Medical Extra**
 
-## Updating future days on GitHub
+| Track | Active | Passive | Total |
+|---|---:|---:|---:|
+| General | 25 (10 verbs, 6 adj/adverbs, 5 nouns, 4 function words/phrases) | 35 (mostly nouns) | 60 |
+| Medical Extra | 3 patient-friendly verbs/questions | 5 symptom nouns | 8 |
 
-Publish `lessons/day2.json`, `lessons/day3.json`, etc., then append entries to `lessons/catalog.json`, e.g.:
+Medical detail reader shows patient-friendly German and professional/clinical example sentences with German TTS.
 
-```json
-{"id":"day2","path":"lessons/day2.json","revision":1,"releaseDate":"YYYY-MM-DD"}
-```
+### Vocabulary prioritization
 
-The app checks the public catalog at launch, when it comes online and when you press **Settings → Check new lessons**. Published lessons will be added to local vocabulary without requiring JSON copy/paste. Do not reuse word IDs. Validate every new lesson's German grammar and avoid duplicate lemmas. Increment a lesson's `revision` in the catalog for an amended published Day 1.
+Proposed hybrid **curriculum-selection** weights (not verified per-word corpus ranks):
 
-Day 1 v1 → v2 migration matches German lemmas to preserve notes and review marks, and keeps previously studied/annotated removed words in an Archive lesson.
+- Goethe A1/A2 and CEFR appropriateness — **25%**
+- Spoken German: SUBTLEX-DE subtitles + IDS FOLK spontaneous conversation — **30%**
+- Written frequency context: Leipzig Corpora and Duden — **15%**
+- Everyday usefulness and practical Germany situations — **20%**
+- Grammar, collocations, productive patterns — **10%**
 
-**Publishing lessons is NOT backing up private study data.** Local notes, progress and review history do **not** sync to GitHub. Use Settings → Export JSON backup and save to Files/iCloud Drive periodically. Restore only after reviewing it.
+The current app sorts by **editorial Core/High tier and qualitative frequency estimate**, *not* numerical, normalized corpus ranks. It does not download or score raw SUBTLEX/FOLK/Leipzig frequencies for each word, and makes no claim to. Terms with no measured source data have no invented frequency count. Language priority is a curriculum guideline, not a scientifically validated score.
 
-No OpenAI API payment. To automatically *publish* a new day daily, a separate scheduled GitHub-writing workflow is required; this app only automatically **downloads** what's published.
+References:
+- https://www.goethe.de/pro/relaunch/prf/zh/A1_SD1_Wortliste_02.pdf
+- https://pubmed.ncbi.nlm.nih.gov/21768069/
+- https://agd.ids-mannheim.de/folk.shtml
+- https://www.wortschatz.uni-leipzig.de/en/documentation/faq
+- https://www.duden.de/hilfe/haeufigkeit
 
-## PWA Install
+## Passive → Active, without counting the word as new
 
-iPhone: open the HTTPS site in Safari → Share → Add to Home Screen. Offline caching needs one successful online launch.
+Passive words can be manually **Promoted to Active** from the Word Detail after the learner can independently produce a new German sentence. The Review screen suggests candidates after being marked Known at least twice, but never promotes just because the learner read a word.
 
-Existing original app: https://github.com/robinmarks45-eng/wortschatz (unchanged).
+The promotion is saved as a **personal `goalMode` in IndexedDB progress**, so GitHub lesson revisions do not overwrite it. Promote/Return to Passive is reversible; study state and notes persist. An earlier passive lemma promoted for review must **not** be counted again among a future day's 60 *new* General words.
+
+## iPhone App Features
+
+- Sticky German column with horizontally scrollable essential forms, Myanmar meaning, example sentences
+- Study order / editorial Priority sort
+- All / General Active / General Passive / 🩺 Medical filter
+- Word Detail with Back/Next, conjugation/plural, TTS, patient/clinical examples
+- Studied / Known / Weak and list-based review, resume, active-recall candidate suggestions
+- Offline caching (after first successful online launch) and private IndexedDB progress
+- Manual JSON backup/restore, optional manual lesson import
+
+## Publish future daily lessons to GitHub
+
+Upload `lessons/day2.json`, `lessons/day3.json`, etc., and append corresponding items to `lessons/catalog.json` with id, path, releaseDate and revision. A standard new day needs **68 nonduplicated** entries with `track` = `general` or `medical`. The app auto-imports published lessons when online and keeps downloaded lessons locally, no copy/paste required.
+
+To edit an already published lesson, increase its catalog revision. The client currently migrates **Day 1** revisions; editing later already-imported days in place needs a future update to the migration logic.
+
+**GitHub only backs up published vocabulary, not personal data.** Export JSON backup from Settings and save to Files/iCloud Drive. Use it when changing devices, reinstalling Home Screen app, or after clearing website data. Safari and Home Screen PWA can have different local storage containers.
+
+No OpenAI API required. The app **downloads** newly published days automatically, but an external scheduled publisher (automation or workflow) is still needed if future daily lesson generation/upload should happen without a chat request.
+
+## iPhone installation
+
+Safari → open https://robinmarks45-eng.github.io/wortschatz-daily/ → Share → Add to Home Screen. If old UI persists after deployment, reopen/refresh while online so service worker v3 and app v3 can update.
