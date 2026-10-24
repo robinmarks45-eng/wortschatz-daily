@@ -2,7 +2,7 @@
   "id": "day1",
   "day": "Day 1",
   "topic": "A1 Foundation + 8 Medical German",
-  "revision": 3,
+  "revision": 4,
   "selectionMethod": "Hybrid curriculum strategy: Goethe/CEFR 25%, spoken SUBTLEX-DE/FOLK 30%, written Leipzig/Duden 15%, practical usefulness 20%, grammar patterns 10%. These are proposed editorial weights, NOT computed per-word corpus-backed scores. No numerical frequency rank assigned.",
   "references": [
     "https://www.goethe.de/pro/relaunch/prf/zh/A1_SD1_Wortliste_02.pdf",
@@ -1270,5 +1270,33 @@
     "generalPassive": 35,
     "medicalActive": 3,
     "medicalPassive": 5
-  }
+  },
+  "sections": [
+    {
+      "id": "general-active",
+      "title": "General Active",
+      "track": "general",
+      "mode": "active",
+      "expectedWords": 25,
+      "learningGoal": "Produce your own German sentence"
+    },
+    {
+      "id": "general-passive",
+      "title": "General Passive",
+      "track": "general",
+      "mode": "passive",
+      "expectedWords": 35,
+      "learningGoal": "Read/understand before active promotion"
+    },
+    {
+      "id": "medical-extra",
+      "title": "Medical Extra",
+      "track": "medical",
+      "expectedWords": 8,
+      "active": 3,
+      "passive": 5,
+      "learningGoal": "Patient-friendly and clinical German"
+    }
+  ],
+  "listDisplay": "Sections in fixed order: General Active 25, General Passive 35, Medical Extra 8. iPhone list uses a pinned German word column."
 }
