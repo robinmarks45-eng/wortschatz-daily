@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "description": "Published lessons for the local-first Wortschatz Daily PWA. Adding dayN.json and a catalog entry exposes a new day on next app launch.",
+  "description": "Public, read-only day-by-day vocabulary: 60 general + 8 medical. App auto-imports new days; private notes remain local.",
   "lessons": [
     {
       "id": "day1",
       "path": "lessons/day1.json",
-      "revision": 2,
+      "revision": 3,
       "releaseDate": "2026-10-25"
     }
   ]
