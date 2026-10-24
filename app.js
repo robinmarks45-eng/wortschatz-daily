@@ -9,7 +9,7 @@ const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMon
 const addDays=(d,n)=>{let [y,m,day]=d.split('-').map(Number);return new Date(Date.UTC(y,m-1,day+n)).toISOString().slice(0,10)};
 const typeName={verb:'Verb',noun:'Noun',adjective:'Adjective',adverb:'Adverb',function:'Function',phrase:'Phrase'};
 let db=null, state=null, saveQueue=Promise.resolve(), noteTimer=null, toastTimer=null, syncBusy=false, lastCheck=0;
-const ui={tab:'today',group:'all',view:'full',search:'',selected:null,context:[],dayId:null,importText:'',onlyWeak:false,storageError:false,syncMessage:''};
+const ui={tab:'today',group:'all',view:'full',search:'',selected:null,context:[],dayId:null,importText:'',onlyWeak:false,storageError:false,syncMessage:'',sort:'study'};
 
 function openDB(){return new Promise((resolve,reject)=>{
   if(!('indexedDB' in window)){reject(Error('IndexedDB unavailable'));return}
@@ -122,10 +122,16 @@ function applyTheme(){document.documentElement.dataset.theme=state?.settings?.th
 function allWordIds(){const seen=new Set(),out=[];state.lessons.forEach(l=>l.wordIds.forEach(id=>{if(state.words[id]&&!seen.has(id)){seen.add(id);out.push(id)}}));return out}
 function getLesson(){return state.lessons.find(l=>l.id===ui.dayId)||state.lessons.at(-1)}
 function progress(id){return state.progress[id]||{status:'new',reps:0,due:null,interval:0}}
+function track(id){return state.words[id]?.track==='medical'?'medical':'general'}
+function learningMode(id){return progress(id).goalMode||state.words[id]?.mode||'passive'}
+function suggestedActiveIds(){return allWordIds().filter(id=>track(id)==='general'&&state.words[id].mode==='passive'&&learningMode(id)==='passive'&&progress(id).status==='known'&&(progress(id).reps||0)>=2)}
+function priorityValue(id){const w=state.words[id];return (({core:3,high:2,medium:1})[w.importance]||0)*10+(({very_common:3,common:2,situational:1})[w.frequencyEstimate]||0)}
 function studied(id){return progress(id).status!=='new'}
 function dueIds(){return allWordIds().filter(id=>{const p=progress(id);return p.status==='weak'||Boolean(p.due&&p.due<=today())})}
 function selectedIds(){let ids=ui.tab==='review'?dueIds():ui.tab==='library'?allWordIds():getLesson().wordIds.filter(id=>state.words[id]);
-  if(ui.group!=='all')ids=ids.filter(id=>state.words[id].mode===ui.group);
+  if(ui.group==='medical')ids=ids.filter(id=>track(id)==='medical');
+  else if(ui.group==='active'||ui.group==='passive')ids=ids.filter(id=>track(id)==='general'&&learningMode(id)===ui.group);
+  if(ui.sort==='priority')ids=[...ids].sort((a,b)=>priorityValue(b)-priorityValue(a));
   if(ui.onlyWeak&&ui.tab!=='review')ids=ids.filter(id=>progress(id).status==='weak');
   const q=lower(ui.search);if(q)ids=ids.filter(id=>{const w=state.words[id];return lower([w.de,w.mm,w.plural,w.forms,w.example,w.pattern,state.notes[id]||''].join(' ')).includes(q)});
   return ids;
@@ -140,7 +146,7 @@ function render(){if(!state)return;$('#bottomNav').innerHTML=navHTML();applyThem
 }
 function counterCard(num,label,desc=''){return `<div class="card tight"><div class="stat-label">${label}<\/div><div class="stat-number">${num}<\/div>${desc?`<small>${desc}<\/small>`:''}<\/div>`}
 function lessonSelector(){return `<select class="select" id="daySelect" aria-label="Study day">${state.lessons.map(l=>`<option value="${escapeHTML(l.id)}" ${l.id===getLesson().id?'selected':''}>${escapeHTML(l.day)} — ${escapeHTML(l.topic)}<\/option>`).join('')}<\/select>`}
-function toolbar(){return `<div class="toolbar section"><div class="toolbar-line"><div class="toolbar-group">${ui.tab==='today'?lessonSelector():''}<div class="segment" aria-label="Vocabulary mode">${[['all','All'],['active','Active'],['passive','Passive']].map(([v,n])=>`<button type="button" data-group="${v}" class="${ui.group===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><div class="toolbar-group"><span class="subtle" style="font-size:12px">View:<\/span><div class="segment">${[['compact','Compact'],['full','Full']].map(([v,n])=>`<button data-view="${v}" class="${ui.view===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><\/div><div class="toolbar-line"><input id="searchBox" class="search" type="search" placeholder="Search German / မြန်မာ / grammar …" value="${escapeHTML(ui.search)}" aria-label="Search words" />${ui.tab!=='review'?`<button class="button slim ${ui.onlyWeak?'primary':''}" data-action="weakFilter">${ui.onlyWeak?'✓ Weak only':'Weak only'}<\/button>`:''}<\/div><\/div>`}
+function toolbar(){return `<div class="toolbar section"><div class="toolbar-line"><div class="toolbar-group">${ui.tab==='today'?lessonSelector():''}<div class="segment" aria-label="Vocabulary mode">${[['all','All'],['active','Active'],['passive','Passive'],['medical','🩺 Medical']].map(([v,n])=>`<button type="button" data-group="${v}" class="${ui.group===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><div class="toolbar-group"><span class="subtle" style="font-size:12px">Sort:</span><div class="segment">${[['study','Study'],['priority','Priority']].map(([v,n])=>`<button data-sort="${v}" class="${ui.sort===v?'active':''}">${n}</button>`).join('')}</div><span class="subtle" style="font-size:12px">View:<\/span><div class="segment">${[['compact','Compact'],['full','Full']].map(([v,n])=>`<button data-view="${v}" class="${ui.view===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><\/div><div class="toolbar-line"><input id="searchBox" class="search" type="search" placeholder="Search German / မြန်မာ / grammar …" value="${escapeHTML(ui.search)}" aria-label="Search words" />${ui.tab!=='review'?`<button class="button slim ${ui.onlyWeak?'primary':''}" data-action="weakFilter">${ui.onlyWeak?'✓ Weak only':'Weak only'}<\/button>`:''}<\/div><\/div>`}
 function statusDot(id){const status=progress(id).status;return `<span class="indicator ${status}" title="${status}"><\/span>`}
 function deHTML(de){const m=String(de).match(/^(der|die|das)\s+(.+)$/);return m?`<span class="article ${m[1]}">${m[1]}<\/span> ${escapeHTML(m[2])}`:escapeHTML(de)}
 function essentials(w){if(w.pos==='noun')return w.plural&&w.plural!=='—'?`Plural: ${w.plural}`:'Usually no plural';if(w.pos==='verb'){
@@ -148,7 +154,7 @@ function essentials(w){if(w.pos==='noun')return w.plural&&w.plural!=='—'?`Plur
   if(w.pattern)return w.pattern;return typeName[w.pos]||w.pos||'—';
 }
 function makeTable(){const ids=selectedIds();const total=ui.tab==='today'?getLesson().wordIds.length:allWordIds().length;
-  const body=ids.map((id,i)=>{const w=state.words[id];const mark=progress(id).status;return `<tr data-id="${escapeHTML(id)}" tabindex="0" aria-label="Open ${escapeHTML(w.de)} details"><td class="pinned"><div class="wordname">${deHTML(w.de)}<\/div><div class="word-sub">${statusDot(id)} ${escapeHTML(typeName[w.pos]||w.pos)} ${w.mode==='active'?'· Active':'· Passive'} ${mark!=='new'?'· '+escapeHTML(mark):''}<\/div><\/td><td class="essential"><span class="wordmeta">${escapeHTML(essentials(w))}<\/span><\/td><td class="translation">${escapeHTML(w.mm)}<\/td>${ui.view==='full'?`<td class="example">${escapeHTML(w.example||'—')}<\/td>`:''}<\/tr>`}).join('');
+  const body=ids.map((id,i)=>{const w=state.words[id];const mark=progress(id).status;return `<tr data-id="${escapeHTML(id)}" tabindex="0" aria-label="Open ${escapeHTML(w.de)} details"><td class="pinned"><div class="wordname">${deHTML(w.de)}<\/div><div class="word-sub">${statusDot(id)} ${track(id)==='medical'?'🩺 Medical':escapeHTML(typeName[w.pos]||w.pos)+' · '+(learningMode(id)==='active'?'Active':'Passive')}${progress(id).goalMode==='active'?' ↑ promoted':''} · ${escapeHTML(w.importance||'practical')} ${mark!=='new'?'· '+escapeHTML(mark):''}<\/div><\/td><td class="essential"><span class="wordmeta">${escapeHTML(essentials(w))}<\/span><\/td><td class="translation">${escapeHTML(w.mm)}<\/td>${ui.view==='full'?`<td class="example">${escapeHTML(w.example||'—')}<\/td>`:''}<\/tr>`}).join('');
   return `<section class="card table-card section"><div class="table-title between"><div><strong>Vocabulary at a glance<\/strong><div class="subtle" style="font-size:11px;margin-top:2px">${ids.length} visible · ${total} total<\/div><\/div><span class="chip">↔ Swipe sideways<\/span><\/div><div class="table-scroll" id="tableScroll" tabindex="0" aria-label="Horizontally scrollable vocabulary table"><table class="vocab-table"><thead><tr><th class="pinned">German word<\/th><th class="essential">Essential info<\/th><th class="translation">မြန်မာ Translation<\/th>${ui.view==='full'?'<th class="example">Example sentence<\/th>':''}<\/tr><\/thead><tbody>${body||`<tr><td colspan="${ui.view==='full'?4:3}" class="empty">No words match these filters.<\/td><\/tr>`}<\/tbody><\/table><\/div><div class="hint-strip">German word stays pinned on the left. Tap any row to read details, then use Back / Next.<\/div><\/section>`}
 function renderStudy(){const l=getLesson(),s=stats(),ids=l.wordIds,read=ids.filter(studied).length,percent=Math.round(read/Math.max(1,ids.length)*100),recentId=state.positions[l.id],resume=recentId&&state.words[recentId];
   return `<div class="hero"><div class="eyebrow">${ui.tab==='library'?'My vocabulary library':'Daily vocabulary · List-first learning'}<\/div><h1>${ui.tab==='library'?'All your words, one place.':'Read first. Recall later.'}<\/h1><p class="subtitle">${ui.tab==='library'?'Search every study day, open details, review notes.':'German + grammar + translation at a glance, followed by detailed reading.'}<\/p><\/div>
@@ -216,7 +222,7 @@ function importLesson(obj){if(!obj||!Array.isArray(obj.words)||obj.words.length<
 }
 function importFromText(){let txt=$('#lessonText')?.value?.trim();if(!txt)return toast('Paste JSON first');let obj;try{obj=JSON.parse(txt.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,''))}catch(e){return toast('Invalid JSON — check quotation marks and commas')}importLesson(obj)}
 function resume(){const l=getLesson(),last=state.positions[l.id];const id=last&&l.wordIds.includes(last)?last:l.wordIds.find(id=>!studied(id))||l.wordIds[0];
-  if(ui.group!=='all'&&state.words[id]?.mode!==ui.group)ui.group='all';ui.search='';ui.onlyWeak=false;render();openWord(id)
+  if(ui.group!=='all'&&!(ui.group==='medical'?track(id)==='medical':track(id)==='general'&&learningMode(id)===ui.group))ui.group='all';ui.search='';ui.onlyWeak=false;render();openWord(id)
 }
 // Centralized event delegation keeps table scroll position while the word detail opens.
 document.addEventListener('click',event=>{
@@ -226,6 +232,7 @@ document.addEventListener('click',event=>{
   const step=event.target.closest('[data-step]');if(step){stepWord(Number(step.dataset.step));return}
   const mark=event.target.closest('[data-mark]');if(mark){markWord(mark.dataset.mark);return}
   const group=event.target.closest('[data-group]');if(group){ui.group=group.dataset.group;render();return}
+  const sort=event.target.closest('[data-sort]');if(sort){ui.sort=sort.dataset.sort;render();return}
   const view=event.target.closest('[data-view]');if(view){ui.view=view.dataset.view;state.settings.view=ui.view;save();render();return}
   const lesson=event.target.closest('[data-open-lesson]');if(lesson){ui.dayId=lesson.dataset.openLesson;setTab('today');return}
   const act=event.target.closest('[data-action]');if(!act){if(event.target.id==='modalOverlay')closeDetail();return}
