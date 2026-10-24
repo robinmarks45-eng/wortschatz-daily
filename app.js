@@ -78,7 +78,7 @@ function addPublicDay(item,lesson,words,rev){
 }
 async function syncCatalog(manual=false,repairDay1=false){
  if(syncBusy||!state||(!manual&&!repairDay1&&Date.now()-lastCheck<60000))return;
- syncBusy=true;lastCheck=Date.now();let count=0;
+ syncBusy=true;lastCheck=Date.now();let count=0,newestAdded=null;
  try{
   // A query version and no-store reduce stale catalog/lesson reads across iOS PWA and CDNs.
   const response=await fetch('./lessons/catalog.json?check='+Date.now(),{cache:'no-store'});
@@ -107,12 +107,13 @@ async function syncCatalog(manual=false,repairDay1=false){
    if(expected&&words.length!==expected)throw Error(item.id+' is incomplete: expected '+expected+', got '+words.length);
    if(expectedMedical&&words.filter(w=>w.track==='medical').length!==expectedMedical)throw Error(item.id+' medical section incomplete');
    if(old&&item.id==='day1'){if(migrateFirstDay(lesson,words,rev))count++}
-   else if(!old){if(addPublicDay(item,lesson,words,rev))count++}
+   else if(!old){if(addPublicDay(item,lesson,words,rev)){count++;newestAdded=item.id}}
   }
   if(count){
    flushNote();save();
    const days=state.lessons.filter(l=>/^day[0-9]+$/.test(l.id));
-   if(days.length>1&&ui.dayId!=='day1')ui.dayId=days.at(-1).id;
+   if(newestAdded&&ui.tab==='today'&&!ui.selected){ui.dayId=newestAdded;ui.group='all';ui.pos='all';ui.article='all';ui.search='';ui.onlyWeak=false}
+   else if(days.length>1&&ui.dayId!=='day1')ui.dayId=days.at(-1).id;
    ui.syncMessage='✓ '+count+' lesson(s) refreshed from GitHub';
    render();toast(ui.syncMessage);
   }else{
