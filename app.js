@@ -131,7 +131,7 @@ function dueIds(){return allWordIds().filter(id=>{const p=progress(id);return p.
 function selectedIds(){let ids=ui.tab==='review'?dueIds():ui.tab==='library'?allWordIds():getLesson().wordIds.filter(id=>state.words[id]);
   if(ui.group==='medical')ids=ids.filter(id=>track(id)==='medical');
   else if(ui.group==='active'||ui.group==='passive')ids=ids.filter(id=>track(id)==='general'&&learningMode(id)===ui.group);
-  if(ui.sort==='priority')ids=[...ids].sort((a,b)=>priorityValue(b)-priorityValue(a));
+  if(ui.sort==='priority')ids=[...ids].sort((a,b)=>track(a)!==track(b)?(track(a)==='medical'?1:-1):priorityValue(b)-priorityValue(a));
   if(ui.onlyWeak&&ui.tab!=='review')ids=ids.filter(id=>progress(id).status==='weak');
   const q=lower(ui.search);if(q)ids=ids.filter(id=>{const w=state.words[id];return lower([w.de,w.mm,w.plural,w.forms,w.example,w.pattern,state.notes[id]||''].join(' ')).includes(q)});
   return ids;
