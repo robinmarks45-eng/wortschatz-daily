@@ -8,8 +8,8 @@ const lower=s=>String(s||'').normalize('NFC').trim().toLocaleLowerCase('de').rep
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const addDays=(d,n)=>{let [y,m,day]=d.split('-').map(Number);return new Date(Date.UTC(y,m-1,day+n)).toISOString().slice(0,10)};
 const typeName={verb:'Verb',noun:'Noun',adjective:'Adjective',adverb:'Adverb',function:'Function',phrase:'Phrase'};
-let db=null, state=null, saveQueue=Promise.resolve(), noteTimer=null, toastTimer=null;
-const ui={tab:'today',group:'all',view:'full',search:'',selected:null,context:[],dayId:null,importText:'',onlyWeak:false,storageError:false};
+let db=null, state=null, saveQueue=Promise.resolve(), noteTimer=null, toastTimer=null, syncBusy=false, lastCheck=0;
+const ui={tab:'today',group:'all',view:'full',search:'',selected:null,context:[],dayId:null,importText:'',onlyWeak:false,storageError:false,syncMessage:''};
 
 function openDB(){return new Promise((resolve,reject)=>{
   if(!('indexedDB' in window)){reject(Error('IndexedDB unavailable'));return}
@@ -27,8 +27,82 @@ function flushNote(){if(noteTimer!==null){clearTimeout(noteTimer);noteTimer=null
 function emptyState(lesson){const words={},ids=[];for(const [i,raw] of lesson.words.entries()){
     const id=String(raw.id||`day1-${i+1}`);ids.push(id);words[id]={...raw,id};
   }
-  return{version:1,words,lessons:[{id:'day1',day:'Day 1',topic:lesson.topic||'Everyday German',date:today(),wordIds:ids}],progress:{},notes:{},positions:{},history:[],settings:{theme:'light',view:'full'},nextId:1};
+  return{version:1,words,lessons:[{id:'day1',day:'Day 1',topic:lesson.topic||'Everyday German',date:today(),wordIds:ids}],progress:{},notes:{},positions:{},history:[],settings:{theme:'light',view:'full'},catalogRevisions:{day1:Number(lesson.revision||1)},nextId:1};
 }
+
+function publicWord(w,day,i){
+ if(!w||typeof w.de!=='string'||!w.de.trim()||typeof w.mm!=='string'||!w.mm.trim())throw Error('Invalid published word');
+ let id=String(w.id||day+'-'+(i+1));
+ if(!/^[a-z0-9_-]{1,70}$/i.test(id))throw Error('Invalid ID');
+ return {...w,id,de:w.de.slice(0,160),mm:w.mm.slice(0,250),mode:w.mode==='passive'?'passive':'active',pos:['noun','verb','adjective','adverb','function','phrase'].includes(w.pos)?w.pos:'phrase'};
+}
+function migrateFirstDay(lesson,words,rev){
+ const day=state.lessons.find(l=>l.id==='day1');if(!day)return false;
+ const oldIds=[...day.wordIds],previous=new Map(oldIds.filter(id=>state.words[id]).map(id=>[lower(state.words[id].de),id]));
+ const newIds=[],matched=new Set();
+ for(const w of words){
+  const old=previous.get(lower(w.de));if(old){matched.add(old);
+   if(old!==w.id){
+    if(state.notes[old]&&!state.notes[w.id])state.notes[w.id]=state.notes[old];
+    if(state.progress[old]&&!state.progress[w.id])state.progress[w.id]=state.progress[old];
+    for(const h of state.history)if(h.id===old)h.id=w.id;
+    if(state.positions.day1===old)state.positions.day1=w.id;
+    delete state.notes[old];delete state.progress[old];
+   }
+  }
+  state.words[w.id]=w;newIds.push(w.id);
+ }
+ const archive=[];
+ for(const id of oldIds){
+  if(matched.has(id)){if(!newIds.includes(id))delete state.words[id];continue}
+  const p=state.progress[id];
+  if(state.notes[id]||(p&&p.status!=='new')||state.positions.day1===id||state.history.some(h=>h.id===id))archive.push(id);
+  else{delete state.words[id];delete state.notes[id];delete state.progress[id]}
+ }
+ day.wordIds=newIds;day.topic=lesson.topic||day.topic;
+ if(!newIds.includes(state.positions.day1))delete state.positions.day1;
+ if(archive.length){
+  const old=state.lessons.find(l=>l.id==='day1-legacy');
+  if(old)old.wordIds=[...new Set([...old.wordIds,...archive])];
+  else state.lessons.push({id:'day1-legacy',day:'Archive',topic:'Previously studied Day 1 words',date:today(),wordIds:archive});
+ }
+ state.catalogRevisions.day1=rev;return true;
+}
+function addPublicDay(item,lesson,words,rev){
+ if(state.lessons.some(l=>l.id===item.id))return false;
+ const seen=new Set(allWordIds().map(id=>lower(state.words[id].de))),ids=[];
+ for(const w of words){if(seen.has(lower(w.de))||state.words[w.id])continue;state.words[w.id]=w;ids.push(w.id);seen.add(lower(w.de))}
+ if(!ids.length)return false;
+ state.lessons.push({id:item.id,day:String(lesson.day||item.id),topic:String(lesson.topic||'Daily vocabulary'),date:String(item.releaseDate||today()),wordIds:ids});
+ state.catalogRevisions[item.id]=rev;return true;
+}
+async function syncCatalog(manual=false){
+ if(syncBusy||!state||(!manual&&Date.now()-lastCheck<60000))return;
+ syncBusy=true;lastCheck=Date.now();let count=0;
+ try{
+  const response=await fetch('./lessons/catalog.json',{cache:'no-store'});
+  if(!response.ok)throw Error('Catalog offline');
+  const catalog=await response.json();if(!Array.isArray(catalog.lessons)||catalog.lessons.length>366)throw Error('Invalid catalog');
+  state.catalogRevisions=state.catalogRevisions||{};
+  for(const item of catalog.lessons){
+   if(!/^day[0-9]+$/.test(item.id)||item.path!=='lessons/'+item.id+'.json')continue;
+   const rev=Number(item.revision||1),old=state.lessons.some(l=>l.id===item.id);
+   if(old&&(state.catalogRevisions[item.id]||0)>=rev)continue;
+   const r=await fetch('./'+item.path,{cache:'no-store'});if(!r.ok)throw Error('Lesson offline: '+item.id);
+   const lesson=await r.json();if(!Array.isArray(lesson.words)||!lesson.words.length||lesson.words.length>200)throw Error('Bad lesson');
+   const words=lesson.words.map((w,i)=>publicWord(w,item.id,i));
+   if(new Set(words.map(w=>lower(w.de))).size!==words.length||new Set(words.map(w=>w.id)).size!==words.length)throw Error('Duplicate published words');
+   if(old&&item.id==='day1'){if(migrateFirstDay(lesson,words,rev))count++}
+   else if(!old){if(addPublicDay(item,lesson,words,rev))count++}
+  }
+  if(count){flushNote();save();const days=state.lessons.filter(l=>/^day[0-9]+$/.test(l.id));
+   if(days.length>1)ui.dayId=days.at(-1).id;
+   ui.syncMessage=count+' lesson update(s) loaded';render();toast(ui.syncMessage);
+  }else{ui.syncMessage='Up to date · '+new Date().toLocaleString();if(manual)toast('Already up to date')}
+ }catch(e){ui.syncMessage='Cannot check GitHub lessons while offline';console.warn('Lesson sync',e);if(manual)toast(ui.syncMessage)}
+ finally{syncBusy=false;if(manual&&ui.tab==='settings')render()}
+}
+
 async function initialize(){
   try{db=await openDB()}catch(e){ui.storageError=true}
   try{if(db)state=await dbGet()}catch(e){ui.storageError=true}
@@ -39,6 +113,7 @@ async function initialize(){
   ui.dayId=state.lessons[state.lessons.length-1]?.id;
   ui.view=state.settings.view||'full';
   applyTheme();render();
+  await syncCatalog();
   if(ui.storageError)toast('⚠ Progress may not persist on this browser');
   if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
@@ -84,15 +159,16 @@ function renderStudy(){const l=getLesson(),s=stats(),ids=l.wordIds,read=ids.filt
 function renderReview(){const d=dueIds();const s=stats();return `<div class="hero"><div class="eyebrow">Review · No flashcards required<\/div><h1>Words to revisit.<\/h1><p class="subtitle">Weak words and due items. Read their content again, and mark how confidently you can use each word.<\/p><\/div><div class="grid grid-3">${counterCard(s.due,'Due now')}${counterCard(s.weak,'Weak words')}${counterCard(s.known,'Known words')}<\/div><section class="card section"><h2>List-based revision<\/h2><p class="subtitle">Tap each row for meaning, grammar and examples. Mark Weak / Studied / Known from the detailed reader.<\/p><\/section>${toolbar()}${makeTable()}`}
 function recentHistory(){let h=state.history.slice(-10).reverse();if(!h.length)return '<p class="subtle">No study marks yet. Open a word and tap Studied, Known or Weak.<\/p>';return h.map(x=>`<div class="activity"><div><strong>${escapeHTML(state.words[x.id]?.de||'Word')}<\/strong><div class="subtle" style="font-size:11px">${escapeHTML(x.date)}<\/div><\/div><span class="chip ${escapeHTML(x.status)}">${escapeHTML(x.status)}<\/span><\/div>`).join('')}
 function renderProgress(){const s=stats(),percent=Math.round(s.read/Math.max(1,s.total)*100);return `<div class="hero"><div class="eyebrow">Learning history<\/div><h1>Your progress.<\/h1><p class="subtitle">Studied means you have read/practiced the word — not necessarily mastered it.<\/p><\/div><div class="grid grid-3">${counterCard(s.total,'Total words')}${counterCard(s.read,'Studied')}${counterCard(s.known,'Known')}<\/div><section class="card section"><div class="between"><h2>Learning coverage<\/h2><strong>${percent}%<\/strong><\/div><div class="progressbar" style="margin:14px 0"><div style="width:${percent}%"><\/div><\/div><div class="subtle">${s.weak} Weak · ${s.due} due · ${state.lessons.length} study day(s)<\/div><\/section><section class="card section"><h2 style="margin-bottom:14px">Lessons<\/h2>${state.lessons.map(l=>{const n=l.wordIds.filter(studied).length;return `<div class="activity"><div><strong>${escapeHTML(l.day)} · ${escapeHTML(l.topic)}<\/strong><div class="subtle">${n}/${l.wordIds.length} studied<\/div><\/div><button class="button slim" data-open-lesson="${escapeHTML(l.id)}">Open →<\/button><\/div>`}).join('')}<\/section><section class="card section"><h2 style="margin-bottom:10px">Recent activity<\/h2>${recentHistory()}<\/section>`}
-function renderSettings(){return `<div class="hero"><div class="eyebrow">Private, local-first<\/div><h1>Your data & new lessons.<\/h1><p class="subtitle">Your study data stays on this browser in IndexedDB. This app does not contact OpenAI or Google Drive.<\/p><\/div>
+function renderSettings(){return `<div class="hero"><div class="eyebrow">Private, local-first<\/div><h1>Your data & new lessons.<\/h1><p class="subtitle">Public lessons download from GitHub; notes and progress stay in private local IndexedDB. No OpenAI API.<\/p><\/div>
  <section class="card section stack"><h2>Backup & restore<\/h2><p class="setting-text">Backup includes lessons, notes, review marks, positions and learning history. Save your file to Files or iCloud Drive. Restore replaces current data only after confirmation.<\/p><div class="buttons"><button class="button primary" data-action="export">↓ Export JSON backup<\/button><label class="button" for="backupFile">↑ Restore backup<\/label><input class="file-input" id="backupFile" type="file" accept="application/json,.json" /><\/div><\/section>
+ <section class="card section stack"><h2>GitHub daily lessons</h2><p class="setting-text">Day 2, 3… appear after publishing, when you open this app online. ${escapeHTML(ui.syncMessage||'Checking on app launch.')}</p><div class="buttons"><button class="button primary" data-action="syncCatalog">↻ Check new lessons</button></div><p class="setting-text">Public vocabulary is stored on GitHub. Personal notes, learning history and Weak/Known marks still need JSON backup.</p></section>
  <section class="card section stack"><h2>Add a lesson from ChatGPT<\/h2><p class="setting-text">Copy a vocabulary generation prompt, paste it into ChatGPT, then paste returned JSON below. No API charge. Words are de-duplicated before adding.<\/p><div class="buttons"><button class="button soft" data-action="copyPrompt">Copy Day ${state.lessons.length+1} prompt<\/button><label class="button" for="lessonFile">Open lesson JSON<\/label><input class="file-input" id="lessonFile" type="file" accept="application/json,.json" /><\/div><textarea id="lessonText" class="textarea" placeholder='{"day":"Day 2","topic":"...","words":[{"de":"...","mm":"...","mode":"active","pos":"verb"}]}' aria-label="Paste lesson JSON">${escapeHTML(ui.importText)}<\/textarea><button class="button primary" data-action="import">Import new words<\/button><\/section>
  <section class="card section stack"><h2>Storage & safety<\/h2><p class="setting-text">Safari Home Screen installation and Safari browser can maintain separate website data. Clearing website data, uninstalling the web app, or changing phones can erase local progress. Export backups regularly. The original GitHub Wortschatz app is completely separate.<\/p><div class="buttons"><button class="button soft" data-action="theme">Switch theme<\/button><\/div><small>${allWordIds().length} words · ${state.lessons.length} lessons · ${state.history.length} study events<\/small><\/section>`}
 function detailInfo(w){return w.pos==='noun'?`<div>${escapeHTML(w.plural?'Plural: '+w.plural:'Plural not provided')}<\/div>`:w.pos==='verb'?`<div>${escapeHTML(w.forms||'No conjugation supplied')}<\/div>`:`<div>${escapeHTML(typeName[w.pos]||w.pos)}<\/div>`}
 function renderDetail(){const root=$('#detailRoot');const id=ui.selected,w=state.words[id];if(!w){ui.selected=null;root.innerHTML='';return}
   const i=ui.context.indexOf(id),p=progress(id),note=state.notes[id]||'';
   root.innerHTML=`<div class="overlay" id="modalOverlay"><section class="detail-panel" role="dialog" aria-modal="true" aria-label="${escapeHTML(w.de)} details"><div class="detail-head"><button class="button slim" data-action="close">← Word list<\/button><span class="subtle" style="font-size:12px">${i+1} / ${ui.context.length}<\/span><button class="icon-button" data-action="close" aria-label="Close">×<\/button><\/div>
-  <div class="detail-body" id="detailBody"><div class="between"><span class="chip ${escapeHTML(w.mode)}">${w.mode==='active'?'● Active':'● Passive'} · ${escapeHTML(typeName[w.pos]||w.pos)}<\/span><button class="button slim soft" data-action="speak" data-say="word" aria-label="Play German pronunciation">🔊 Listen<\/button><\/div><div class="detail-word">${deHTML(w.de)}<\/div><div class="detail-meaning">${escapeHTML(w.mm)}<\/div>
+  <div class="detail-body" id="detailBody"><div class="between"><span class="chip ${escapeHTML(w.mode)}">${w.mode==='active'?'● Active':'● Passive'} · ${escapeHTML(typeName[w.pos]||w.pos)}<\/span><button class="button slim soft" data-action="speak" data-say="word" aria-label="Play German pronunciation">🔊 Listen<\/button><\/div>${w.level?`<div class="subtle" style="font-size:11px;margin:8px 0">${escapeHTML(w.level)} · ${escapeHTML(w.importance||'practical')} priority · ${escapeHTML(w.frequencyEstimate||'unranked')} (estimated, not corpus rank)</div>`:''}<div class="detail-word">${deHTML(w.de)}<\/div><div class="detail-meaning">${escapeHTML(w.mm)}<\/div>
   <div class="detail-item"><div class="detail-label">Essential forms<\/div>${detailInfo(w)}<\/div>
   ${w.pattern?`<div class="detail-item"><div class="detail-label">Grammar / Common usage<\/div><strong>${escapeHTML(w.pattern)}<\/strong><\/div>`:''}
   ${w.example?`<div class="detail-item"><div class="between"><div class="detail-label">Example sentence<\/div><button class="button slim" data-action="speak" data-say="example">▶ DE<\/button><\/div><div class="detail-example">${escapeHTML(w.example)}<\/div>${w.translation?`<div class="detail-trans">${escapeHTML(w.translation)}<\/div>`:''}<\/div>`:''}
@@ -124,7 +200,7 @@ function readJsonFile(file,cb){if(!file)return;const reader=new FileReader();rea
 function restoreBackup(obj){if(!validState(obj)){toast('Not a compatible Wortschatz Daily backup');return}
   const ids=new Set(Object.keys(obj.words));if(obj.lessons.some(l=>!Array.isArray(l.wordIds)||l.wordIds.some(id=>!ids.has(id)))){toast('Backup has missing word references');return}
   const n=Object.keys(obj.words).length;if(!confirm(`Restore backup with ${n} words and ${obj.lessons.length} lessons?\n\nThis replaces all current local vocabulary, notes and progress.`))return;
-  flushNote();state=JSON.parse(JSON.stringify(obj));ui.dayId=state.lessons.at(-1).id;ui.view=state.settings.view||'full';ui.selected=null;save();setTab('today');toast('Backup restored')
+  flushNote();state=JSON.parse(JSON.stringify(obj));ui.dayId=state.lessons.at(-1).id;ui.view=state.settings.view||'full';ui.selected=null;save();setTab('today');toast('Backup restored');syncCatalog(true)
 }
 function importLesson(obj){if(!obj||!Array.isArray(obj.words)||obj.words.length<1||obj.words.length>200){toast('JSON needs a words array (1–200 items)');return}
   if(obj.words.some(w=>!w||typeof w!=='object'||typeof w.de!=='string'||!w.de.trim()||typeof w.mm!=='string'||!w.mm.trim())){toast('Every item needs German de and Myanmar mm');return}
@@ -153,7 +229,7 @@ document.addEventListener('click',event=>{
   const view=event.target.closest('[data-view]');if(view){ui.view=view.dataset.view;state.settings.view=ui.view;save();render();return}
   const lesson=event.target.closest('[data-open-lesson]');if(lesson){ui.dayId=lesson.dataset.openLesson;setTab('today');return}
   const act=event.target.closest('[data-action]');if(!act){if(event.target.id==='modalOverlay')closeDetail();return}
-  switch(act.dataset.action){case 'close':closeDetail();break;case 'speak':speak(act.dataset.say);break;case 'resume':resume();break;case 'theme':toggleTheme();break;case 'export':exportBackup();break;case 'copyPrompt':copyPrompt();break;case 'import':importFromText();break;case 'weakFilter':ui.onlyWeak=!ui.onlyWeak;render();break;}
+  switch(act.dataset.action){case 'close':closeDetail();break;case 'speak':speak(act.dataset.say);break;case 'resume':resume();break;case 'theme':toggleTheme();break;case 'export':exportBackup();break;case 'copyPrompt':copyPrompt();break;case 'import':importFromText();break;case 'syncCatalog':syncCatalog(true);break;case 'weakFilter':ui.onlyWeak=!ui.onlyWeak;render();break;}
 });
 document.addEventListener('change',event=>{
   const t=event.target;if(!state)return;
@@ -174,6 +250,7 @@ document.addEventListener('keydown',event=>{
   if(ui.selected&&event.target.tagName!=='TEXTAREA'&&event.target.tagName!=='INPUT'&&event.key==='ArrowRight')stepWord(1);
   else if(ui.selected&&event.target.tagName!=='TEXTAREA'&&event.target.tagName!=='INPUT'&&event.key==='ArrowLeft')stepWord(-1);
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden)flushNote()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)flushNote();else if(state)syncCatalog()});
+window.addEventListener('online',()=>{if(state)syncCatalog(true)});
 $('#themeButton').addEventListener('click',()=>{if(state)toggleTheme()});
 initialize();
