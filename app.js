@@ -9,7 +9,7 @@ const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMon
 const addDays=(d,n)=>{let [y,m,day]=d.split('-').map(Number);return new Date(Date.UTC(y,m-1,day+n)).toISOString().slice(0,10)};
 const typeName={verb:'Verb',noun:'Noun',adjective:'Adjective',adverb:'Adverb',function:'Function',phrase:'Phrase'};
 let db=null, state=null, saveQueue=Promise.resolve(), noteTimer=null, toastTimer=null, syncBusy=false, lastCheck=0;
-const ui={tab:'today',group:'all',view:'full',search:'',selected:null,context:[],dayId:null,importText:'',onlyWeak:false,storageError:false,syncMessage:'',sort:'study'};
+const ui={tab:'today',group:'all',view:'full',search:'',selected:null,context:[],dayId:null,importText:'',onlyWeak:false,storageError:false,syncMessage:'',sort:'study',pos:'all',article:'all'};
 
 function openDB(){return new Promise((resolve,reject)=>{
   if(!('indexedDB' in window)){reject(Error('IndexedDB unavailable'));return}
@@ -141,7 +141,7 @@ async function initialize(){
   if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 function validState(s){return s&&s.version===1&&s.words&&typeof s.words==='object'&&!Array.isArray(s.words)&&Array.isArray(s.lessons)&&s.lessons.length>0&&s.progress&&typeof s.progress==='object'&&s.notes&&typeof s.notes==='object'&&s.positions&&typeof s.positions==='object'&&Array.isArray(s.history)&&s.settings}
-function applyTheme(){document.documentElement.dataset.theme=state?.settings?.theme==='dark'?'dark':'light';$('#themeButton').setAttribute('aria-pressed',String(state?.settings?.theme==='dark'))}
+function applyTheme(){document.documentElement.dataset.theme=state?.settings?.theme==='dark'?'dark':'light';document.documentElement.style.setProperty('--list-word-size',Math.max(15,Math.min(22,Number(state?.settings?.listFontSize)||17))+'px');$('#themeButton').setAttribute('aria-pressed',String(state?.settings?.theme==='dark'))}
 function allWordIds(){const seen=new Set(),out=[];state.lessons.forEach(l=>l.wordIds.forEach(id=>{if(state.words[id]&&!seen.has(id)){seen.add(id);out.push(id)}}));return out}
 function getLesson(){return state.lessons.find(l=>l.id===ui.dayId)||state.lessons.at(-1)}
 function progress(id){return state.progress[id]||{status:'new',reps:0,due:null,interval:0}}
@@ -151,9 +151,40 @@ function suggestedActiveIds(){return allWordIds().filter(id=>track(id)==='genera
 function priorityValue(id){const w=state.words[id];return (({core:3,high:2,medium:1})[w.importance]||0)*10+(({very_common:3,common:2,situational:1})[w.frequencyEstimate]||0)}
 function studied(id){return progress(id).status!=='new'}
 function dueIds(){return allWordIds().filter(id=>{const p=progress(id);return p.status==='weak'||Boolean(p.due&&p.due<=today())})}
+
+function nounArticle(word){
+ if(word?.pos!=='noun')return '';
+ const match=String(word.de||'').trim().match(/^(der|die|das)\s+/i);
+ return match?match[1].toLowerCase():'';
+}
+function wordCategory(word){
+ return ['noun','verb','adjective','adverb'].includes(word?.pos)?word.pos:'other';
+}
+function setWordSize(value){
+ if(!state)return;
+ const font=Math.max(15,Math.min(22,Number(value)||17));
+ state.settings.listFontSize=font;
+ document.documentElement.style.setProperty('--list-word-size',font+'px');
+ save();render();
+}
+function wordTypeFilters(){
+ const choices=[['all','All types'],['noun','Nouns'],['verb','Verbs'],['adjective','Adjectives'],['adverb','Adverbs'],['other','Other']];
+ const btn=choices.map(pair=>'<button type="button" data-pos="'+pair[0]+'" class="'+(ui.pos===pair[0]?'active':'')+'" aria-pressed="'+(ui.pos===pair[0])+'">'+pair[1]+'</button>').join('');
+ let markup='<div class="filter-line"><span class="filter-label">Word type</span><div class="segment pos-filter" aria-label="Word type filter">'+btn+'</div></div>';
+ if(ui.pos==='noun'){
+  const articleButtons=[['all','All articles'],['der','der'],['die','die'],['das','das']].map(pair=>'<button type="button" data-article="'+pair[0]+'" aria-pressed="'+(ui.article===pair[0])+'" class="'+(ui.article===pair[0]?'active ':'')+(pair[0]!=='all'?'article-'+pair[0]:'')+'">'+pair[1]+'</button>').join('');
+  markup+='<div class="filter-line"><span class="filter-label">Noun article</span><div class="segment article-filter" aria-label="Noun article filter">'+articleButtons+'</div></div>';
+ }
+ const font=state.settings.listFontSize||17;
+ markup+='<div class="filter-line font-filter"><span class="filter-label">List text</span><div class="segment font-controls" role="group" aria-label="Vocabulary list text size"><button type="button" data-font="-1" aria-label="Make word list text smaller" '+(font<=15?'disabled':'')+'>A−</button><span class="font-size-value" aria-live="polite">'+font+'px</span><button type="button" data-font="1" aria-label="Make word list text larger" '+(font>=22?'disabled':'')+'>A+</button></div></div>';
+ return markup;
+}
+
 function selectedIds(){let ids=ui.tab==='review'?dueIds():ui.tab==='library'?allWordIds():getLesson().wordIds.filter(id=>state.words[id]);
   if(ui.group==='medical')ids=ids.filter(id=>track(id)==='medical');
   else if(ui.group==='active'||ui.group==='passive')ids=ids.filter(id=>track(id)==='general'&&learningMode(id)===ui.group);
+  if(ui.pos!=='all')ids=ids.filter(id=>wordCategory(state.words[id])===ui.pos);
+  if(ui.pos==='noun'&&ui.article!=='all')ids=ids.filter(id=>nounArticle(state.words[id])===ui.article);
   if(ui.sort==='priority')ids=[...ids].sort((a,b)=>track(a)!==track(b)?(track(a)==='medical'?1:-1):priorityValue(b)-priorityValue(a));
   if(ui.onlyWeak&&ui.tab!=='review')ids=ids.filter(id=>progress(id).status==='weak');
   const q=lower(ui.search);if(q)ids=ids.filter(id=>{const w=state.words[id];return lower([w.de,w.mm,w.plural,w.forms,w.example,w.pattern,state.notes[id]||''].join(' ')).includes(q)});
@@ -169,7 +200,7 @@ function render(){if(!state)return;$('#bottomNav').innerHTML=navHTML();applyThem
 }
 function counterCard(num,label,desc=''){return `<div class="card tight"><div class="stat-label">${label}<\/div><div class="stat-number">${num}<\/div>${desc?`<small>${desc}<\/small>`:''}<\/div>`}
 function lessonSelector(){return `<select class="select" id="daySelect" aria-label="Study day">${state.lessons.map(l=>`<option value="${escapeHTML(l.id)}" ${l.id===getLesson().id?'selected':''}>${escapeHTML(l.day)} — ${escapeHTML(l.topic)}<\/option>`).join('')}<\/select>`}
-function toolbar(){return `<div class="toolbar section"><div class="toolbar-line"><div class="toolbar-group">${ui.tab==='today'?lessonSelector():''}<div class="segment" aria-label="Vocabulary mode">${[['all','All'],['active','Active'],['passive','Passive'],['medical','🩺 Medical']].map(([v,n])=>`<button type="button" data-group="${v}" class="${ui.group===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><div class="toolbar-group"><span class="subtle" style="font-size:12px">Sort:</span><div class="segment">${[['study','Study'],['priority','Priority']].map(([v,n])=>`<button data-sort="${v}" class="${ui.sort===v?'active':''}">${n}</button>`).join('')}</div><span class="subtle" style="font-size:12px">View:<\/span><div class="segment">${[['compact','Compact'],['full','Full']].map(([v,n])=>`<button data-view="${v}" class="${ui.view===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><\/div><div class="toolbar-line"><input id="searchBox" class="search" type="search" placeholder="Search German / မြန်မာ / grammar …" value="${escapeHTML(ui.search)}" aria-label="Search words" />${ui.tab!=='review'?`<button class="button slim ${ui.onlyWeak?'primary':''}" data-action="weakFilter">${ui.onlyWeak?'✓ Weak only':'Weak only'}<\/button>`:''}<\/div><\/div>`}
+function toolbar(){return `<div class="toolbar section"><div class="toolbar-line"><div class="toolbar-group">${ui.tab==='today'?lessonSelector():''}<div class="segment" aria-label="Vocabulary mode">${[['all','All'],['active','Active'],['passive','Passive'],['medical','🩺 Medical']].map(([v,n])=>`<button type="button" data-group="${v}" class="${ui.group===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><div class="toolbar-group"><span class="subtle" style="font-size:12px">Sort:</span><div class="segment">${[['study','Study'],['priority','Priority']].map(([v,n])=>`<button data-sort="${v}" class="${ui.sort===v?'active':''}">${n}</button>`).join('')}</div><span class="subtle" style="font-size:12px">View:<\/span><div class="segment">${[['compact','Compact'],['full','Full']].map(([v,n])=>`<button data-view="${v}" class="${ui.view===v?'active':''}">${n}<\/button>`).join('')}<\/div><\/div><\/div>${wordTypeFilters()}<div class="toolbar-line"><input id="searchBox" class="search" type="search" placeholder="Search German / မြန်မာ / grammar …" value="${escapeHTML(ui.search)}" aria-label="Search words" />${ui.tab!=='review'?`<button class="button slim ${ui.onlyWeak?'primary':''}" data-action="weakFilter">${ui.onlyWeak?'✓ Weak only':'Weak only'}<\/button>`:''}<\/div><\/div>`}
 function statusDot(id){const status=progress(id).status;return `<span class="indicator ${status}" title="${status}"><\/span>`}
 function deHTML(de){const m=String(de).match(/^(der|die|das)\s+(.+)$/);return m?`<span class="article ${m[1]}">${m[1]}<\/span> ${escapeHTML(m[2])}`:escapeHTML(de)}
 function essentials(w){if(w.pos==='noun')return w.plural&&w.plural!=='—'?`Plural: ${w.plural}`:'Usually no plural';if(w.pos==='verb'){
@@ -266,7 +297,7 @@ function speak(choice){const w=state.words[ui.selected];if(!w)return;const phras
   if(!('speechSynthesis' in window))return toast('German TTS not supported by this browser');
   speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(phrase);u.lang='de-DE';u.rate=.82;speechSynthesis.speak(u)
 }
-function setTab(tab){flushNote();ui.tab=tab;ui.group='all';ui.search='';ui.onlyWeak=false;ui.selected=null;$('#detailRoot').innerHTML='';document.body.style.overflow='';render();window.scrollTo({top:0,behavior:'instant'})}
+function setTab(tab){flushNote();ui.tab=tab;ui.group='all';ui.search='';ui.onlyWeak=false;ui.pos='all';ui.article='all';ui.selected=null;$('#detailRoot').innerHTML='';document.body.style.overflow='';render();window.scrollTo({top:0,behavior:'instant'})}
 function toggleTheme(){state.settings.theme=state.settings.theme==='dark'?'light':'dark';save();render()}
 function download(content,name,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),6000)}
 function exportBackup(){download(JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2),`wortschatz-daily-backup-${today()}.json`,'application/json');toast('Backup downloaded — save it safely')}
@@ -288,7 +319,7 @@ function importLesson(obj){if(!obj||!Array.isArray(obj.words)||obj.words.length<
   if(!ids.length){toast(`No new words: ${duplicates} duplicates`);return}
   const dayNum=state.lessons.length+1,id=`day${dayNum}-${Date.now()}`;
   Object.assign(state.words,words);state.lessons.push({id,day:String(obj.day||`Day ${dayNum}`).slice(0,60),topic:String(obj.topic||'New vocabulary').slice(0,130),date:today(),wordIds:ids});state.nextId=seq;
-  ui.dayId=id;ui.importText='';ui.group='all';ui.search='';ui.onlyWeak=false;save();setTab('today');toast(`Imported ${ids.length} words · ${duplicates} duplicate(s) skipped`)
+  ui.dayId=id;ui.importText='';ui.group='all';ui.pos='all';ui.article='all';ui.search='';ui.onlyWeak=false;save();setTab('today');toast(`Imported ${ids.length} words · ${duplicates} duplicate(s) skipped`)
 }
 function importFromText(){let txt=$('#lessonText')?.value?.trim();if(!txt)return toast('Paste JSON first');let obj;try{obj=JSON.parse(txt.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,''))}catch(e){return toast('Invalid JSON — check quotation marks and commas')}importLesson(obj)}
 function resume(){const l=getLesson(),last=state.positions[l.id];const id=last&&l.wordIds.includes(last)?last:l.wordIds.find(id=>!studied(id))||l.wordIds[0];
@@ -302,6 +333,9 @@ document.addEventListener('click',event=>{
   const step=event.target.closest('[data-step]');if(step){stepWord(Number(step.dataset.step));return}
   const mark=event.target.closest('[data-mark]');if(mark){markWord(mark.dataset.mark);return}
   const group=event.target.closest('[data-group]');if(group){ui.group=group.dataset.group;ui.search='';ui.onlyWeak=false;render();return}
+  const p=event.target.closest('[data-pos]');if(p){ui.pos=p.dataset.pos;ui.article='all';render();return}
+  const a=event.target.closest('[data-article]');if(a){ui.article=a.dataset.article;render();return}
+  const z=event.target.closest('[data-font]');if(z){setWordSize((state.settings.listFontSize||17)+Number(z.dataset.font));return}
   const sort=event.target.closest('[data-sort]');if(sort){ui.sort=sort.dataset.sort;render();return}
   const practice=event.target.closest('[data-practice]');if(practice){const id=practice.dataset.practice;setTab('library');openWord(id);return}
   const view=event.target.closest('[data-view]');if(view){ui.view=view.dataset.view;state.settings.view=ui.view;save();render();return}
@@ -311,7 +345,7 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('change',event=>{
   const t=event.target;if(!state)return;
-  if(t.id==='daySelect'){ui.dayId=t.value;ui.group='all';ui.search='';ui.onlyWeak=false;render()}
+  if(t.id==='daySelect'){ui.dayId=t.value;ui.group='all';ui.pos='all';ui.article='all';ui.search='';ui.onlyWeak=false;render()}
   if(t.id==='backupFile')readJsonFile(t.files?.[0],restoreBackup);
   if(t.id==='lessonFile')readJsonFile(t.files?.[0],obj=>{ui.importText=JSON.stringify(obj,null,2);render();toast('Lesson JSON loaded — tap Import')});
 });
