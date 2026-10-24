@@ -141,7 +141,7 @@ async function initialize(){
   if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 function validState(s){return s&&s.version===1&&s.words&&typeof s.words==='object'&&!Array.isArray(s.words)&&Array.isArray(s.lessons)&&s.lessons.length>0&&s.progress&&typeof s.progress==='object'&&s.notes&&typeof s.notes==='object'&&s.positions&&typeof s.positions==='object'&&Array.isArray(s.history)&&s.settings}
-function applyTheme(){document.documentElement.dataset.theme=state?.settings?.theme==='dark'?'dark':'light';document.documentElement.style.setProperty('--list-word-size',Math.max(15,Math.min(22,Number(state?.settings?.listFontSize)||17))+'px');$('#themeButton').setAttribute('aria-pressed',String(state?.settings?.theme==='dark'))}
+function applyTheme(){document.documentElement.dataset.theme=state?.settings?.theme==='dark'?'dark':'light';document.documentElement.style.setProperty('--list-word-size',Math.max(15,Math.min(22,Number(state?.settings?.listFontSize)||18))+'px');$('#themeButton').setAttribute('aria-pressed',String(state?.settings?.theme==='dark'))}
 function allWordIds(){const seen=new Set(),out=[];state.lessons.forEach(l=>l.wordIds.forEach(id=>{if(state.words[id]&&!seen.has(id)){seen.add(id);out.push(id)}}));return out}
 function getLesson(){return state.lessons.find(l=>l.id===ui.dayId)||state.lessons.at(-1)}
 function progress(id){return state.progress[id]||{status:'new',reps:0,due:null,interval:0}}
@@ -158,24 +158,24 @@ function nounArticle(word){
  return match?match[1].toLowerCase():'';
 }
 function wordCategory(word){
- return ['noun','verb','adjective','adverb'].includes(word?.pos)?word.pos:'other';
+ return word?.pos==='adverb'?'adjective':['noun','verb','adjective'].includes(word?.pos)?word.pos:'other';
 }
 function setWordSize(value){
  if(!state)return;
- const font=Math.max(15,Math.min(22,Number(value)||17));
+ const font=Math.max(15,Math.min(22,Number(value)||18));
  state.settings.listFontSize=font;
  document.documentElement.style.setProperty('--list-word-size',font+'px');
  save();render();
 }
 function wordTypeFilters(){
- const choices=[['all','All types'],['noun','Nouns'],['verb','Verbs'],['adjective','Adjectives'],['adverb','Adverbs'],['other','Other']];
+ const choices=[['all','All types'],['noun','Nouns'],['verb','Verbs'],['adjective','Adj / Adv'],['other','Other']];
  const btn=choices.map(pair=>'<button type="button" data-pos="'+pair[0]+'" class="'+(ui.pos===pair[0]?'active':'')+'" aria-pressed="'+(ui.pos===pair[0])+'">'+pair[1]+'</button>').join('');
  let markup='<div class="filter-line"><span class="filter-label">Word type</span><div class="segment pos-filter" aria-label="Word type filter">'+btn+'</div></div>';
  if(ui.pos==='noun'){
   const articleButtons=[['all','All articles'],['der','der'],['die','die'],['das','das']].map(pair=>'<button type="button" data-article="'+pair[0]+'" aria-pressed="'+(ui.article===pair[0])+'" class="'+(ui.article===pair[0]?'active ':'')+(pair[0]!=='all'?'article-'+pair[0]:'')+'">'+pair[1]+'</button>').join('');
   markup+='<div class="filter-line"><span class="filter-label">Noun article</span><div class="segment article-filter" aria-label="Noun article filter">'+articleButtons+'</div></div>';
  }
- const font=state.settings.listFontSize||17;
+ const font=state.settings.listFontSize||18;
  markup+='<div class="filter-line font-filter"><span class="filter-label">List text</span><div class="segment font-controls" role="group" aria-label="Vocabulary list text size"><button type="button" data-font="-1" aria-label="Make word list text smaller" '+(font<=15?'disabled':'')+'>A−</button><span class="font-size-value" aria-live="polite">'+font+'px</span><button type="button" data-font="1" aria-label="Make word list text larger" '+(font>=22?'disabled':'')+'>A+</button></div></div>';
  return markup;
 }
@@ -335,7 +335,7 @@ document.addEventListener('click',event=>{
   const group=event.target.closest('[data-group]');if(group){ui.group=group.dataset.group;ui.search='';ui.onlyWeak=false;render();return}
   const p=event.target.closest('[data-pos]');if(p){ui.pos=p.dataset.pos;ui.article='all';render();return}
   const a=event.target.closest('[data-article]');if(a){ui.article=a.dataset.article;render();return}
-  const z=event.target.closest('[data-font]');if(z){setWordSize((state.settings.listFontSize||17)+Number(z.dataset.font));return}
+  const z=event.target.closest('[data-font]');if(z){setWordSize((state.settings.listFontSize||18)+Number(z.dataset.font));return}
   const sort=event.target.closest('[data-sort]');if(sort){ui.sort=sort.dataset.sort;render();return}
   const practice=event.target.closest('[data-practice]');if(practice){const id=practice.dataset.practice;setTab('library');openWord(id);return}
   const view=event.target.closest('[data-view]');if(view){ui.view=view.dataset.view;state.settings.view=ui.view;save();render();return}
