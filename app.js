@@ -323,7 +323,7 @@ function importLesson(obj){if(!obj||!Array.isArray(obj.words)||obj.words.length<
 }
 function importFromText(){let txt=$('#lessonText')?.value?.trim();if(!txt)return toast('Paste JSON first');let obj;try{obj=JSON.parse(txt.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,''))}catch(e){return toast('Invalid JSON — check quotation marks and commas')}importLesson(obj)}
 function resume(){const l=getLesson(),last=state.positions[l.id];const id=last&&l.wordIds.includes(last)?last:l.wordIds.find(id=>!studied(id))||l.wordIds[0];
-  if(ui.group!=='all'&&!(ui.group==='medical'?track(id)==='medical':track(id)==='general'&&learningMode(id)===ui.group))ui.group='all';ui.search='';ui.onlyWeak=false;render();openWord(id)
+  if(ui.group!=='all'&&!(ui.group==='medical'?track(id)==='medical':track(id)==='general'&&learningMode(id)===ui.group))ui.group='all';ui.pos='all';ui.article='all';ui.search='';ui.onlyWeak=false;render();openWord(id)
 }
 // Centralized event delegation keeps table scroll position while the word detail opens.
 document.addEventListener('click',event=>{
@@ -332,7 +332,7 @@ document.addEventListener('click',event=>{
   const row=event.target.closest('tr[data-id]');if(row){openWord(row.dataset.id);return}
   const step=event.target.closest('[data-step]');if(step){stepWord(Number(step.dataset.step));return}
   const mark=event.target.closest('[data-mark]');if(mark){markWord(mark.dataset.mark);return}
-  const group=event.target.closest('[data-group]');if(group){ui.group=group.dataset.group;ui.search='';ui.onlyWeak=false;render();return}
+  const group=event.target.closest('[data-group]');if(group){ui.group=group.dataset.group;if(group.matches('.day1-shortcut,.medical-button')){ui.pos='all';ui.article='all'}ui.search='';ui.onlyWeak=false;render();return}
   const p=event.target.closest('[data-pos]');if(p){ui.pos=p.dataset.pos;ui.article='all';render();return}
   const a=event.target.closest('[data-article]');if(a){ui.article=a.dataset.article;render();return}
   const z=event.target.closest('[data-font]');if(z){setWordSize((state.settings.listFontSize||18)+Number(z.dataset.font));return}
