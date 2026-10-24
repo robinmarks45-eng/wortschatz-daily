@@ -1,0 +1,19 @@
+{
+  "name": "Wortschatz Daily — German Reader",
+  "short_name": "Wortschatz",
+  "description": "List-first German vocabulary reader with offline notes and review",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8f7",
+  "theme_color": "#117a70",
+  "lang": "my",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
