@@ -1,12 +1,30 @@
 {
   "schema": 1,
-  "description": "Public, read-only day-by-day vocabulary: 60 general + 8 medical. App auto-imports new days; private notes remain local.",
+  "description": "Public 68-word Day 1, including 8 Medical Extra. The app checks local word/medical counts on every online refresh, repairs incomplete caches, and preserves personal IndexedDB progress.",
   "lessons": [
     {
       "id": "day1",
       "path": "lessons/day1.json",
-      "revision": 3,
-      "releaseDate": "2026-10-25"
+      "revision": 4,
+      "releaseDate": "2026-10-25",
+      "expectedWords": 68,
+      "expectedMedical": 8,
+      "sections": [
+        {
+          "id": "general-active",
+          "count": 25
+        },
+        {
+          "id": "general-passive",
+          "count": 35
+        },
+        {
+          "id": "medical-extra",
+          "count": 8,
+          "active": 3,
+          "passive": 5
+        }
+      ]
     }
   ]
 }
