@@ -74,3 +74,12 @@ If a Home Screen installation previously cached the 60-word lesson, open the app
 The repair migrates progress/notes for matching words and preserves previously studied words no longer in the main curriculum in an Archive. Don't uninstall the Home Screen app or clear Safari website data as a troubleshooting step before exporting a JSON backup, as personal learning data is stored locally.
 
 Manual deployment checks: verify `lessons/catalog.json` revision 4 and counts; `lessons/day1.json` revision 4 and 68 words; deploy updated `app.js?v=4`, `styles.css?v=4`, Service Worker v4. GitHub Pages publishing confirms site deployment, not all individual iOS cache states.
+
+
+## v5 — grammar filters and larger iPhone reading text
+
+The vocabulary toolbar offers **Word type: All types / Nouns / Verbs / Adj / Adv / Other**. The **Nouns** option reveals a second **der / die / das** filter; this uses the article in each noun's German headword. Word-type filters can be combined with General Active, General Passive, Medical, search and review filters. The Day 1 Medical shortcut intentionally clears grammar subfilters so all eight medical words are visible.
+
+Vocabulary list text is now larger by default (**18 px German headwords**, previously 14 px), with increased Myanmar-translation size, row spacing and a wider frozen German column. Use **List text A− / A+** (15–22 px) to adjust it. The choice is saved in the browser's private IndexedDB settings. Changes do not erase notes, study progress or saved promotions.
+
+If an installed iPhone PWA still shows the old controls, open online, refresh and reopen; the deployment includes versioned JavaScript/CSS and a new service-worker cache.
