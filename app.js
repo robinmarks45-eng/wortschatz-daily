@@ -76,31 +76,54 @@ function addPublicDay(item,lesson,words,rev){
  state.lessons.push({id:item.id,day:String(lesson.day||item.id),topic:String(lesson.topic||'Daily vocabulary'),date:String(item.releaseDate||today()),wordIds:ids});
  state.catalogRevisions[item.id]=rev;return true;
 }
-async function syncCatalog(manual=false){
- if(syncBusy||!state||(!manual&&Date.now()-lastCheck<60000))return;
+async function syncCatalog(manual=false,repairDay1=false){
+ if(syncBusy||!state||(!manual&&!repairDay1&&Date.now()-lastCheck<60000))return;
  syncBusy=true;lastCheck=Date.now();let count=0;
  try{
-  const response=await fetch('./lessons/catalog.json',{cache:'no-store'});
-  if(!response.ok)throw Error('Catalog offline');
-  const catalog=await response.json();if(!Array.isArray(catalog.lessons)||catalog.lessons.length>366)throw Error('Invalid catalog');
+  // A query version and no-store reduce stale catalog/lesson reads across iOS PWA and CDNs.
+  const response=await fetch('./lessons/catalog.json?check='+Date.now(),{cache:'no-store'});
+  if(!response.ok)throw Error('Lesson catalog unavailable');
+  const catalog=await response.json();
+  if(!Array.isArray(catalog.lessons)||catalog.lessons.length>366)throw Error('Invalid lesson catalog');
   state.catalogRevisions=state.catalogRevisions||{};
   for(const item of catalog.lessons){
    if(!/^day[0-9]+$/.test(item.id)||item.path!=='lessons/'+item.id+'.json')continue;
-   const rev=Number(item.revision||1),old=state.lessons.some(l=>l.id===item.id);
-   if(old&&(state.catalogRevisions[item.id]||0)>=rev)continue;
-   const r=await fetch('./'+item.path,{cache:'no-store'});if(!r.ok)throw Error('Lesson offline: '+item.id);
-   const lesson=await r.json();if(!Array.isArray(lesson.words)||!lesson.words.length||lesson.words.length>200)throw Error('Bad lesson');
+   const rev=Number(item.revision||1),old=state.lessons.find(l=>l.id===item.id);
+   // Critical repair: revision alone is not trustworthy if a previous fetch cached an incomplete lesson.
+   const localIds=old?.wordIds?.filter(id=>state.words[id])||[];
+   const expected=Number(item.expectedWords||0),expectedMedical=Number(item.expectedMedical||0);
+   const needsRepair=Boolean(item.id==='day1'&&old&&(
+    (expected&&localIds.length!==expected)||
+    (expectedMedical&&localIds.filter(id=>state.words[id].track==='medical').length!==expectedMedical)
+   ));
+   if(old&&(state.catalogRevisions[item.id]||0)>=rev&&!needsRepair&&!(repairDay1&&item.id==='day1'))continue;
+   const query='?rev='+encodeURIComponent(String(rev))+(repairDay1?'&repair='+Date.now():'');
+   const r=await fetch('./'+item.path+query,{cache:'no-store'});
+   if(!r.ok)throw Error('Cannot download '+item.id);
+   const lesson=await r.json();
+   if(!Array.isArray(lesson.words)||!lesson.words.length||lesson.words.length>200)throw Error('Invalid '+item.id);
    const words=lesson.words.map((w,i)=>publicWord(w,item.id,i));
-   if(new Set(words.map(w=>lower(w.de))).size!==words.length||new Set(words.map(w=>w.id)).size!==words.length)throw Error('Duplicate published words');
+   if(new Set(words.map(w=>lower(w.de))).size!==words.length||new Set(words.map(w=>w.id)).size!==words.length)throw Error('Repeated words or IDs in '+item.id);
+   if(expected&&words.length!==expected)throw Error(item.id+' is incomplete: expected '+expected+', got '+words.length);
+   if(expectedMedical&&words.filter(w=>w.track==='medical').length!==expectedMedical)throw Error(item.id+' medical section incomplete');
    if(old&&item.id==='day1'){if(migrateFirstDay(lesson,words,rev))count++}
    else if(!old){if(addPublicDay(item,lesson,words,rev))count++}
   }
-  if(count){flushNote();save();const days=state.lessons.filter(l=>/^day[0-9]+$/.test(l.id));
-   if(days.length>1)ui.dayId=days.at(-1).id;
-   ui.syncMessage=count+' lesson update(s) loaded';render();toast(ui.syncMessage);
-  }else{ui.syncMessage='Up to date · '+new Date().toLocaleString();if(manual)toast('Already up to date')}
- }catch(e){ui.syncMessage='Cannot check GitHub lessons while offline';console.warn('Lesson sync',e);if(manual)toast(ui.syncMessage)}
- finally{syncBusy=false;if(manual&&ui.tab==='settings')render()}
+  if(count){
+   flushNote();save();
+   const days=state.lessons.filter(l=>/^day[0-9]+$/.test(l.id));
+   if(days.length>1&&ui.dayId!=='day1')ui.dayId=days.at(-1).id;
+   ui.syncMessage='✓ '+count+' lesson(s) refreshed from GitHub';
+   render();toast(ui.syncMessage);
+  }else{
+   ui.syncMessage='Up to date · '+new Date().toLocaleString();
+   if(manual||repairDay1)toast('Day 1 and lessons are up to date');
+  }
+ }catch(e){
+  ui.syncMessage='Lesson check failed: '+String(e.message||e);
+  console.warn('Wortschatz catalog refresh',e);
+  if(manual||repairDay1)toast('Could not refresh — check internet and retry');
+ }finally{syncBusy=false;if((manual||repairDay1)&&ui.tab==='settings')render()}
 }
 
 async function initialize(){
@@ -249,7 +272,7 @@ document.addEventListener('click',event=>{
   const view=event.target.closest('[data-view]');if(view){ui.view=view.dataset.view;state.settings.view=ui.view;save();render();return}
   const lesson=event.target.closest('[data-open-lesson]');if(lesson){ui.dayId=lesson.dataset.openLesson;setTab('today');return}
   const act=event.target.closest('[data-action]');if(!act){if(event.target.id==='modalOverlay')closeDetail();return}
-  switch(act.dataset.action){case 'close':closeDetail();break;case 'togglePromotion':togglePromotion();break;case 'speak':speak(act.dataset.say);break;case 'resume':resume();break;case 'theme':toggleTheme();break;case 'export':exportBackup();break;case 'copyPrompt':copyPrompt();break;case 'import':importFromText();break;case 'syncCatalog':syncCatalog(true);break;case 'weakFilter':ui.onlyWeak=!ui.onlyWeak;render();break;}
+  switch(act.dataset.action){case 'close':closeDetail();break;case 'togglePromotion':togglePromotion();break;case 'speak':speak(act.dataset.say);break;case 'resume':resume();break;case 'theme':toggleTheme();break;case 'export':exportBackup();break;case 'copyPrompt':copyPrompt();break;case 'import':importFromText();break;case 'syncCatalog':syncCatalog(true);break;case 'repairDay1':syncCatalog(true,true);break;case 'weakFilter':ui.onlyWeak=!ui.onlyWeak;render();break;}
 });
 document.addEventListener('change',event=>{
   const t=event.target;if(!state)return;
