@@ -180,8 +180,32 @@ function makeTable(){const ids=selectedIds();const total=ui.tab==='today'?getLes
   const body=ids.map((id,i)=>{const w=state.words[id];const mark=progress(id).status;return `<tr data-id="${escapeHTML(id)}" tabindex="0" aria-label="Open ${escapeHTML(w.de)} details"><td class="pinned"><div class="wordname">${deHTML(w.de)}<\/div><div class="word-sub">${statusDot(id)} ${track(id)==='medical'?'🩺 Medical':escapeHTML(typeName[w.pos]||w.pos)+' · '+(learningMode(id)==='active'?'Active':'Passive')}${progress(id).goalMode==='active'?' ↑ promoted':''} · ${escapeHTML(w.importance||'practical')} ${mark!=='new'?'· '+escapeHTML(mark):''}<\/div><\/td><td class="essential"><span class="wordmeta">${escapeHTML(essentials(w))}<\/span><\/td><td class="translation">${escapeHTML(w.mm)}<\/td>${ui.view==='full'?`<td class="example">${escapeHTML(w.example||'—')}<\/td>`:''}<\/tr>`}).join('');
   return `<section class="card table-card section"><div class="table-title between"><div><strong>Vocabulary at a glance<\/strong><div class="subtle" style="font-size:11px;margin-top:2px">${ids.length} visible · ${total} total<\/div><\/div><span class="chip">↔ Swipe sideways<\/span><\/div><div class="table-scroll" id="tableScroll" tabindex="0" aria-label="Horizontally scrollable vocabulary table"><table class="vocab-table"><thead><tr><th class="pinned">German word<\/th><th class="essential">Essential info<\/th><th class="translation">မြန်မာ Translation<\/th>${ui.view==='full'?'<th class="example">Example sentence<\/th>':''}<\/tr><\/thead><tbody>${body||`<tr><td colspan="${ui.view==='full'?4:3}" class="empty">No words match these filters.<\/td><\/tr>`}<\/tbody><\/table><\/div><div class="hint-strip">German word stays pinned on the left. Tap any row to read details, then use Back / Next.<\/div><\/section>`}
 function renderStudy(){const l=getLesson(),s=stats(),ids=l.wordIds,read=ids.filter(studied).length,percent=Math.round(read/Math.max(1,ids.length)*100),recentId=state.positions[l.id],resume=recentId&&state.words[recentId];
-  return `<div class="hero"><div class="eyebrow">${ui.tab==='library'?'My vocabulary library':'Daily vocabulary · List-first learning'}<\/div><h1>${ui.tab==='library'?'All your words, one place.':'Read first. Recall later.'}<\/h1><p class="subtitle">${ui.tab==='library'?'Search every study day, open details, review notes.':'German + grammar + translation at a glance, followed by detailed reading.'}<\/p><\/div>
+
+  const isDay1=ui.tab==='today'&&l.id==='day1';
+  const ga=ids.filter(id=>state.words[id]&&track(id)==='general'&&state.words[id].mode==='active').length;
+  const gp=ids.filter(id=>state.words[id]&&track(id)==='general'&&state.words[id].mode==='passive').length;
+  const medical=ids.filter(id=>state.words[id]&&track(id)==='medical');
+  const ma=medical.filter(id=>state.words[id].mode==='active').length;
+  const incomplete=isDay1&&(ids.length!==68||ga!==25||gp!==35||medical.length!==8||ma!==3);
+  const daySummary=!isDay1?'':(
+   '<section class="card section day1-overview">'+
+   '<div class="day1-overview-head"><h2>Day 1 · 68 words</h2><p>General 60 + Medical 8 — Choose a section to read</p></div>'+
+   '<div class="day1-shortcuts">'+
+   '<button class="day1-shortcut" data-group="active"><small>01 · GENERAL</small><strong>Active '+ga+'/25</strong><span>Speak and write</span></button>'+
+   '<button class="day1-shortcut" data-group="passive"><small>02 · GENERAL</small><strong>Passive '+gp+'/35</strong><span>Read and understand</span></button>'+
+   '<button class="day1-shortcut medical-shortcut" data-group="medical"><small>03 · MEDICAL EXTRA</small><strong>🩺 Medical '+medical.length+'/8</strong><span>3 Active · 5 Passive</span></button>'+
+   '</div><div class="medical-teaser"><div><strong>Medical German · Patient + Clinical</strong><p>'+
+    (medical.length?medical.slice(0,4).map(id=>escapeHTML(state.words[id].de)).join(' · '):'Medical words need to be restored from GitHub')+
+   '</p></div><button class="button slim medical-button" data-group="medical">Show Medical →</button></div></section>');
+  const repairNotice=!incomplete?'':(
+   '<div class="notice day1-repair"><strong>⚠ Day 1 incomplete on this device.</strong> '+
+   ids.length+'/68 total; '+medical.length+'/8 medical. '+
+   '<button class="button primary slim" data-action="repairDay1">↻ Repair Day 1</button>'+
+   '<div class="subtle">Existing notes, review progress and active promotions stay on this device.</div></div>');
+
+  return `<div class="hero"><div class="eyebrow">${ui.tab==='library'?'My vocabulary library':'Daily vocabulary · List-first learning'}<\/div><h1>${ui.tab==='library'?'All your words, one place.':isDay1?'Day 1 · 68 vocabulary entries':'Read first. Recall later.'}<\/h1><p class="subtitle">${ui.tab==='library'?'Search every study day, open details, review notes.':'German + grammar + translation at a glance, followed by detailed reading.'}<\/p><\/div>
   ${ui.storageError?'<div class="notice" id="storageNotice">⚠ Persistent device storage is unavailable. Your changes might not survive a restart. Do not rely on this as your only copy.<\/div>':''}
+  ${repairNotice}${daySummary}
   <div class="grid grid-3">${counterCard(ui.tab==='today'?ids.length:s.total,'Vocabulary',ui.tab==='today'?l.day+' · '+ids.filter(id=>track(id)==='medical').length+' Medical':'All lessons')}${counterCard(ui.tab==='today'?read:s.read,'Studied','Marked/read')}${counterCard(s.due,'Review due','Needs recall')}<\/div>
   ${ui.tab==='today'?`<section class="card section"><div class="between"><div><div class="stat-label">${escapeHTML(l.day)} — ${escapeHTML(l.topic)}<\/div><strong>${read} / ${ids.length} studied<\/strong><\/div><span class="chip">${percent}%<\/span><\/div><div class="progressbar" style="margin:12px 0 14px"><div style="width:${percent}%"><\/div><\/div><div class="buttons"><button class="button primary" data-action="resume">${resume?'Continue: '+escapeHTML(resume.de):'Start reading →'}<\/button><button class="button soft" data-nav="review">Review due (${s.due})<\/button><\/div><\/section>`:''}
   ${toolbar()}${makeTable()}`}
