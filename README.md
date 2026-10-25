@@ -121,3 +121,16 @@ General Active verbs: `können, müssen, wollen, dürfen, mögen, helfen, warten
 Medical Extra: `abhören, einnehmen, Wie lange haben Sie diese Beschwerden?, das Medikament, die Tablette, der Ausschlag, die Schwellung, die Verletzung`. The reader displays patient-friendly German and clinical expressions.
 
 No article-stripped, case-folded German headword duplicates against Days 1–3. **272 unique entries** published across Days 1–4; 240 general and 32 medical. App auto-downloads the day and opens it in Today when online, while maintaining locally stored previous progress, notes, saved filters/font settings, and review history. The app doesn't perform automatic backup of personal state. Importance/frequency tags are editorial teaching estimates, not measured corpus rank positions.
+
+
+## v7 — Pronounce Essential Forms in Word Detail
+
+Each Word Detail now has a **🔊 Forms** button beside Essential forms when pronounceable inflections are available. The bottom reader navigation is **← Back | 🔊 Word + Forms | Next →**, and the center button reads the German headword followed by its essential forms. If a noun has no supplied plural or a word has only grammatical labels, the middle button reads the main German word only. A separate **🔊 Listen** main-word button and example / patient / clinical pronunciation remain.
+
+- Verbs: German first/second/third-person conjugations (`ich bin · du bist · er ist`, separable forms such as `ich nehme ein`)
+- Nouns: spoken plural with article (e.g., `die Woche` → `die Wochen`), not the English label "Plural" or annotations
+- Adjectives: positive / comparative / superlative when supplied (e.g., `schön · schöner · am schönsten`)
+- Inflected question phrases: short usable forms when explicitly provided
+- Forms-only buttons are omitted when the word has no pronounceable essential form. Speech queued using German (`de-DE`) browser text-to-speech, currently at 0.82 rate; playback cancels on Back, Next and closing Word Detail.
+
+iOS Safari speech engine availability and specific German voices are device dependent. This feature uses local Web Speech synthesis, not pre-recorded audio or cloud speech files. Published vocabulary, private notes, marks, review history and backup schema are unchanged.
