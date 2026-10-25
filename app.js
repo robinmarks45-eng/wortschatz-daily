@@ -262,24 +262,68 @@ function renderSettings(){return `<div class="hero"><div class="eyebrow">Private
  <section class="card section stack"><h2>GitHub daily lessons</h2><p class="setting-text">Day 2, 3… appear after publishing, when you open this app online. ${escapeHTML(ui.syncMessage||'Checking on app launch.')}</p><div class="buttons"><button class="button primary" data-action="syncCatalog">↻ Check new lessons</button><button class="button soft" data-action="repairDay1">↻ Repair Day 1 (68 words)</button></div><p class="setting-text">Public vocabulary is stored on GitHub. Personal notes, learning history and Weak/Known marks still need JSON backup.</p></section>
  <section class="card section stack"><h2>Add a lesson from ChatGPT<\/h2><p class="setting-text">Copy a vocabulary generation prompt, paste it into ChatGPT, then paste returned JSON below. No API charge. Words are de-duplicated before adding.<\/p><div class="buttons"><button class="button soft" data-action="copyPrompt">Copy Day ${state.lessons.length+1} prompt<\/button><label class="button" for="lessonFile">Open lesson JSON<\/label><input class="file-input" id="lessonFile" type="file" accept="application/json,.json" /><\/div><textarea id="lessonText" class="textarea" placeholder='{"day":"Day 2","topic":"...","words":[{"de":"...","mm":"...","mode":"active","pos":"verb"}]}' aria-label="Paste lesson JSON">${escapeHTML(ui.importText)}<\/textarea><button class="button primary" data-action="import">Import new words<\/button><\/section>
  <section class="card section stack"><h2>Storage & safety<\/h2><p class="setting-text">Safari Home Screen installation and Safari browser can maintain separate website data. Clearing website data, uninstalling the web app, or changing phones can erase local progress. Export backups regularly. The original GitHub Wortschatz app is completely separate.<\/p><div class="buttons"><button class="button soft" data-action="theme">Switch theme<\/button><\/div><small>${allWordIds().length} words · ${state.lessons.length} lessons · ${state.history.length} study events<\/small><\/section>`}
-function detailInfo(w){return w.pos==='noun'?`<div>${escapeHTML(w.plural?'Plural: '+w.plural:'Plural not provided')}<\/div>`:w.pos==='verb'?`<div>${escapeHTML(w.forms||'No conjugation supplied')}<\/div>`:`<div>${escapeHTML(typeName[w.pos]||w.pos)}<\/div>`}
+
+/* Read the actual inflected forms, not UI labels such as "Plural", "Verb", or "Nominativ". */
+function spokenEssentialForms(w){
+ if(!w)return [];
+ if(w.pos==='noun'){
+  const plural=String(w.plural||'').trim();
+  if(!plural||plural.startsWith('—')||plural==='-')return [];
+  const cleaned=plural.replace(/\s*\([^)]*\)/g,'').trim();
+  return /^(die|der|das)\s+\S/i.test(cleaned)?[cleaned]:[];
+ }
+ const raw=String(w.forms||'').trim();
+ if(!raw||/^—|^[-–]$/.test(raw))return [];
+ if(w.pos==='verb'){
+  return raw.split('·').map(x=>x.trim()).filter(x=>/^(ich|du|er|sie|es|wir|ihr|Sie)\s+\S/i.test(x));
+ }
+ if(w.pos==='adjective'||w.pos==='adverb'||w.pos==='function'){
+  if(/(pronomen|partikel|frage|nominativ|höflich|adverb|konjunktion|negation|imperativ)/i.test(raw))return [];
+  const parts=raw.split('·').map(x=>x.trim()).filter(Boolean);
+  return parts.length>=2?parts.filter(x=>!/[()]/.test(x)):[];
+ }
+ return [];
+}
+function cancelPronunciation(){
+ if('speechSynthesis' in window){try{window.speechSynthesis.cancel()}catch(e){console.warn('TTS cancel:',e)}}
+}
+function playGermanParts(parts){
+ const phrases=parts.map(s=>String(s||'').trim()).filter(Boolean);
+ if(!phrases.length)return toast('No pronunciation available for this word');
+ if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance!=='function')return toast('German speech is not available on this device');
+ try{
+  const synth=window.speechSynthesis;
+  synth.cancel();
+  const voices=typeof synth.getVoices==='function'?synth.getVoices():[];
+  const voice=voices.find(v=>/^de-DE$/i.test(v.lang))||voices.find(v=>/^de\b/i.test(v.lang));
+  // Queue every part synchronously from the user's tap so iOS Safari preserves its speech gesture.
+  for(const phrase of phrases){
+   const utterance=new SpeechSynthesisUtterance(phrase);
+   utterance.lang='de-DE';utterance.rate=.82;
+   if(voice)utterance.voice=voice;
+   synth.speak(utterance);
+  }
+ }catch(e){console.warn('German speech playback:',e);toast('Could not play German pronunciation')}
+}
+
+function detailInfo(w){return w.pos==='noun'?`<div>${escapeHTML(w.plural?'Plural: '+w.plural:'Plural not provided')}<\/div>`:w.pos==='verb'?`<div>${escapeHTML(w.forms||'No conjugation supplied')}<\/div>`:`<div>${escapeHTML(w.forms||typeName[w.pos]||w.pos)}<\/div>`}
 function renderDetail(){const root=$('#detailRoot');const id=ui.selected,w=state.words[id];if(!w){ui.selected=null;root.innerHTML='';return}
   const i=ui.context.indexOf(id),p=progress(id),note=state.notes[id]||'',mode=learningMode(id),isMedical=track(id)==='medical';
   root.innerHTML=`<div class="overlay" id="modalOverlay"><section class="detail-panel" role="dialog" aria-modal="true" aria-label="${escapeHTML(w.de)} details"><div class="detail-head"><button class="button slim" data-action="close">← Word list<\/button><span class="subtle" style="font-size:12px">${i+1} / ${ui.context.length}<\/span><button class="icon-button" data-action="close" aria-label="Close">×<\/button><\/div>
   <div class="detail-body" id="detailBody"><div class="between"><span class="chip ${isMedical?'medical':escapeHTML(mode)}">${isMedical?'🩺 Medical Extra · ':mode==='active'?'● Active · ':'● Passive · '}${escapeHTML(typeName[w.pos]||w.pos)}<\/span><button class="button slim soft" data-action="speak" data-say="word" aria-label="Play German pronunciation">🔊 Listen<\/button><\/div>${w.level?`<div class="subtle" style="font-size:11px;margin:8px 0">${escapeHTML(w.level)} · ${escapeHTML(w.importance||'practical')} priority · ${escapeHTML(w.frequencyEstimate||'unranked')} (estimated, not corpus rank)</div>`:''}<div class="detail-word">${deHTML(w.de)}<\/div><div class="detail-meaning">${escapeHTML(w.mm)}<\/div>
-  <div class="detail-item"><div class="detail-label">Essential forms<\/div>${detailInfo(w)}<\/div>
+  <div class="detail-item"><div class="between essential-heading"><div class="detail-label">Essential forms<\/div>${spokenEssentialForms(w).length?'<button class="button slim soft" data-action="speak" data-say="forms" aria-label="Listen to essential German forms">🔊 Forms<\/button>':''}<\/div><div class="essential-values">${detailInfo(w)}<\/div><\/div>
   ${w.pattern?`<div class="detail-item"><div class="detail-label">Grammar / Common usage<\/div><strong>${escapeHTML(w.pattern)}<\/strong><\/div>`:''}
   ${w.example?`<div class="detail-item"><div class="between"><div class="detail-label">Example sentence<\/div><button class="button slim" data-action="speak" data-say="example">▶ DE<\/button><\/div><div class="detail-example">${escapeHTML(w.example)}<\/div>${w.translation?`<div class="detail-trans">${escapeHTML(w.translation)}<\/div>`:''}<\/div>`:''}
   ${isMedical?`<div class="detail-item medical-detail"><div class="detail-label">Patient-friendly German</div><div class="detail-example">${escapeHTML(w.patientGerman||'—')}</div><button class="button slim soft" data-action="speak" data-say="patient">🔊 Patient phrase</button></div><div class="detail-item medical-detail"><div class="detail-label">Clinical / professional expression</div><div class="detail-example">${escapeHTML(w.clinicalGerman||'—')}</div><button class="button slim soft" data-action="speak" data-say="clinical">🔊 Clinical phrase</button></div>`:''}
   ${!isMedical&&w.mode==='passive'?`<div class="detail-item"><div class="detail-label">Passive → Active progression</div><p class="subtle" style="font-size:12px">Promote when you can recall the meaning and make your own German sentence without reading. This changes your private learning goal only.</p><button class="button ${mode==='active'?'soft':'primary'}" data-action="togglePromotion">${mode==='active'?'↶ Return to Passive':'↑ Promote to Active'}</button>${p.status==='known'&&(p.reps||0)>=2&&mode==='passive'?'<div class="subtle" style="font-size:11px;margin-top:8px">★ Suggested: successfully recalled at least twice</div>':''}</div>`:''}
   <div class="detail-item"><div class="detail-label">Learning status — manually mark<\/div><div class="status-row">${[['new','New'],['studied','✓ Studied'],['known','★ Known'],['weak','! Weak']].map(([key,label])=>`<button class="status-btn ${p.status===key?'selected':''} ${key==='weak'?'weak':''}" data-mark="${key}">${label}<\/button>`).join('')}<\/div><p class="subtle" style="font-size:11px;margin-top:8px">Known = confident recall; Studied = read/practiced; Weak = revise again.<\/p>${p.due?`<p class="subtle" style="font-size:11px;margin-top:5px">Next review: ${escapeHTML(p.due)}<\/p>`:''}<\/div>
   <div class="detail-item"><div class="detail-label">Personal notes · Auto-save<\/div><textarea class="note-textarea" id="wordNote" placeholder="My examples, grammar reminders, pronunciation notes…">${escapeHTML(note)}<\/textarea><div class="subtle" id="noteSaveText" style="font-size:11px;margin-top:5px">Saved locally as you type<\/div><\/div>
-  <\/div><div class="detail-footer"><button class="button block soft" data-step="-1" ${i<=0?'disabled':''}>← Back<\/button><button class="button block primary" data-step="1" ${i>=ui.context.length-1?'disabled':''}>Next →<\/button><\/div><\/section><\/div>`;
+  <\/div><div class="detail-footer"><button class="button block soft" data-step="-1" ${i<=0?'disabled':''}>← Back<\/button><button class="button block play-both" data-action="speak" data-say="both" aria-label="Listen to German word and its essential forms">🔊 <span>${spokenEssentialForms(w).length?'Word + Forms':'Word'}</span><\/button><button class="button block primary" data-step="1" ${i>=ui.context.length-1?'disabled':''}>Next →<\/button><\/div><\/section><\/div>`;
   document.body.style.overflow='hidden';const body=$('#detailBody');if(body)body.scrollTop=0;
 }
 function openWord(id){const ids=selectedIds();if(!ids.includes(id))return;flushNote();ui.context=ids;ui.selected=id;if(ui.tab==='today'){state.positions[getLesson().id]=id;save()}renderDetail()}
-function closeDetail(){flushNote();ui.selected=null;ui.context=[];$('#detailRoot').innerHTML='';document.body.style.overflow='';render()}
-function stepWord(step){const i=ui.context.indexOf(ui.selected),next=ui.context[i+step];if(!next)return;flushNote();ui.selected=next;if(ui.tab==='today'){state.positions[getLesson().id]=next;save()}renderDetail()}
+function closeDetail(){cancelPronunciation();flushNote();ui.selected=null;ui.context=[];$('#detailRoot').innerHTML='';document.body.style.overflow='';render()}
+function stepWord(step){cancelPronunciation();const i=ui.context.indexOf(ui.selected),next=ui.context[i+step];if(!next)return;flushNote();ui.selected=next;if(ui.tab==='today'){state.positions[getLesson().id]=next;save()}renderDetail()}
 function markWord(status){const id=ui.selected;if(!id)return;const old=progress(id),reps=status==='new'?0:(old.reps||0)+1;let due=null,interval=0;
   if(status==='weak'){interval=1;due=addDays(today(),1)}
   if(status==='studied'){interval=1;due=addDays(today(),1)}
@@ -295,11 +339,17 @@ function togglePromotion(){
  if(state.history.length>5000)state.history=state.history.slice(-5000);
  save();renderDetail();toast(promoted?'Returned to Passive':'Promoted to Active — keep practicing');
 }
-function speak(choice){const w=state.words[ui.selected];if(!w)return;const phrase=choice==='example'?w.example:choice==='patient'?w.patientGerman:choice==='clinical'?w.clinicalGerman:w.de;
-  if(!('speechSynthesis' in window))return toast('German TTS not supported by this browser');
-  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(phrase);u.lang='de-DE';u.rate=.82;speechSynthesis.speak(u)
+function speak(choice){
+ const w=state.words[ui.selected];if(!w)return;
+ const forms=spokenEssentialForms(w);
+ if(choice==='forms')return playGermanParts(forms);
+ if(choice==='both')return playGermanParts([w.de,...forms]);
+ if(choice==='example')return playGermanParts([w.example]);
+ if(choice==='patient')return playGermanParts([w.patientGerman]);
+ if(choice==='clinical')return playGermanParts([w.clinicalGerman]);
+ return playGermanParts([w.de]);
 }
-function setTab(tab){flushNote();ui.tab=tab;ui.group='all';ui.search='';ui.onlyWeak=false;ui.pos='all';ui.article='all';ui.selected=null;$('#detailRoot').innerHTML='';document.body.style.overflow='';render();window.scrollTo({top:0,behavior:'instant'})}
+function setTab(tab){cancelPronunciation();flushNote();ui.tab=tab;ui.group='all';ui.search='';ui.onlyWeak=false;ui.pos='all';ui.article='all';ui.selected=null;$('#detailRoot').innerHTML='';document.body.style.overflow='';render();window.scrollTo({top:0,behavior:'instant'})}
 function toggleTheme(){state.settings.theme=state.settings.theme==='dark'?'light':'dark';save();render()}
 function download(content,name,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),6000)}
 function exportBackup(){download(JSON.stringify({...state,exportedAt:new Date().toISOString()},null,2),`wortschatz-daily-backup-${today()}.json`,'application/json');toast('Backup downloaded — save it safely')}
