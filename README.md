@@ -99,3 +99,14 @@ Day 2 adds **68 new entries** to Day 1's 68 (136 distinct German headwords/phras
 The file is `lessons/day2.json` and `lessons/catalog.json` must include an entry with `expectedWords:68` and `expectedMedical:8`. The App opens a newly published lesson on its first online import and shows Day 2's General/Medical sections. Existing Day 1 progress and notes remain stored locally. New and old words are checked against Day 1's German headwords after removing articles; no exact lemma collision exists in this release.
 
 Importance and frequency tags remain **editorial estimates**, not verified numeric corpora ranks. Day 2's 68 entries are stored publicly in GitHub, while personal annotations and progress still require local backup.
+
+
+## Day 3 — Shopping, Directions, Food & Body Parts (2026-10-25)
+
+Published as `lessons/day3.json` and registered in `lessons/catalog.json`. Contains 68 new entries with no exact case-folded/article-stripped lemma duplicates across Days 1–3 (204 total entries): 25 General Active, 35 General Passive, and 8 Medical (3 Active, 5 Passive).
+
+General Active verbs: `kaufen, bezahlen, suchen, finden, fragen, antworten, verstehen, öffnen, schließen, bestellen`. Other new core concepts include `warm, billig, wichtig, richtig, früh, oft, der Monat, die Nummer, die Antwort, der Weg, das Datum, ja, nein, sehr, kein`.
+
+Medical Extra: `zeigen, bewegen, beschreiben, der Kopf, der Bauch, der Rücken, die Brust, das Bein`. Each medical entry includes patient-friendly German and a clinical example.
+
+To retrieve on iPhone: open the app online; the catalog is fetched fresh and Day 3 automatically imports and becomes the selected Today lesson. Alternatively, tap Settings → Check new lessons. Previous lessons and local notes/progress are retained. A1 framework and qualitative ranking labels are editorial, not measured numeric corpus ranks.
