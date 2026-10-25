@@ -110,3 +110,14 @@ General Active verbs: `kaufen, bezahlen, suchen, finden, fragen, antworten, vers
 Medical Extra: `zeigen, bewegen, beschreiben, der Kopf, der Bauch, der Rücken, die Brust, das Bein`. Each medical entry includes patient-friendly German and a clinical example.
 
 To retrieve on iPhone: open the app online; the catalog is fetched fresh and Day 3 automatically imports and becomes the selected Today lesson. Alternatively, tap Settings → Check new lessons. Previous lessons and local notes/progress are retained. A1 framework and qualitative ranking labels are editorial, not measured numeric corpus ranks.
+
+
+## Day 4 — Modal Verbs, Daily Routines, Documents & Patient Care
+
+Published `lessons/day4.json` and registered in `lessons/catalog.json` on 2026-10-25. Exactly **68 new entries**: 25 General Active (10 verbs, 6 adjectives/adverbs, 5 nouns, 4 pronouns), 35 General Passive, and Medical Extra 8 (3 active, 5 passive).
+
+General Active verbs: `können, müssen, wollen, dürfen, mögen, helfen, warten, treffen, bleiben, kochen`. Common modifiers: `gesund, krank, hungrig, durstig, spät, immer`. Basic pronouns: `ich, du, Sie, wir`. Passive words cover home, work, clothing, German documentation, travel and meals.
+
+Medical Extra: `abhören, einnehmen, Wie lange haben Sie diese Beschwerden?, das Medikament, die Tablette, der Ausschlag, die Schwellung, die Verletzung`. The reader displays patient-friendly German and clinical expressions.
+
+No article-stripped, case-folded German headword duplicates against Days 1–3. **272 unique entries** published across Days 1–4; 240 general and 32 medical. App auto-downloads the day and opens it in Today when online, while maintaining locally stored previous progress, notes, saved filters/font settings, and review history. The app doesn't perform automatic backup of personal state. Importance/frequency tags are editorial teaching estimates, not measured corpus rank positions.
