@@ -90,3 +90,20 @@
  .table-scroll{max-height:72dvh}
  .toolbar{gap:13px}
 }
+
+/* v7: German pronunciation actions within word reader */
+.essential-heading{align-items:center;margin-bottom:8px}
+.essential-heading .detail-label{margin-bottom:0}
+.essential-values{font-size:16px;line-height:1.7;color:var(--text);font-weight:650;overflow-wrap:anywhere}
+.essential-heading .button{min-height:38px;flex-shrink:0}
+.detail-footer{grid-template-columns:minmax(0,1fr) minmax(118px,1.35fr) minmax(0,1fr);gap:8px}
+.detail-footer .button{min-width:0;min-height:48px;padding:9px 7px;font-size:13px}
+.detail-footer .play-both{background:var(--mint);color:var(--primary);border-color:var(--primary);font-weight:820;display:flex;gap:5px;align-items:center;justify-content:center}
+.detail-footer .play-both span{font-size:12px;line-height:1.2}
+.detail-footer .play-both:focus-visible,.essential-heading .button:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+@media(max-width:390px){
+ .detail-footer{grid-template-columns:minmax(0,1fr) minmax(102px,1.28fr) minmax(0,1fr);padding-left:9px;padding-right:9px;gap:6px}
+ .detail-footer .button{font-size:12px;padding:8px 3px}
+ .detail-footer .play-both span{font-size:11px}
+ .essential-values{font-size:15px}
+}
