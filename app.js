@@ -277,6 +277,10 @@ function spokenEssentialForms(w){
  if(w.pos==='verb'){
   return raw.split('·').map(x=>x.trim()).filter(x=>/^(ich|du|er|sie|es|wir|ihr|Sie)\s+\S/i.test(x));
  }
+ if(w.pos==='phrase'){
+  if(/^(Frage|Question|Bitte|Höflichkeit)/i.test(raw))return [];
+  return raw.split('·').map(x=>x.replace(/\s*\([^)]*\)/g,'').trim()).filter(x=>x&&x.split(/\s+/).length<=5);
+ }
  if(w.pos==='adjective'||w.pos==='adverb'||w.pos==='function'){
   if(/(pronomen|partikel|frage|nominativ|höflich|adverb|konjunktion|negation|imperativ)/i.test(raw))return [];
   const parts=raw.split('·').map(x=>x.trim()).filter(Boolean);
@@ -343,7 +347,7 @@ function speak(choice){
  const w=state.words[ui.selected];if(!w)return;
  const forms=spokenEssentialForms(w);
  if(choice==='forms')return playGermanParts(forms);
- if(choice==='both')return playGermanParts([w.de,...forms]);
+ if(choice==='both')return playGermanParts([w.de,...forms.filter(part=>lower(part)!==lower(w.de))]);
  if(choice==='example')return playGermanParts([w.example]);
  if(choice==='patient')return playGermanParts([w.patientGerman]);
  if(choice==='clinical')return playGermanParts([w.clinicalGerman]);
