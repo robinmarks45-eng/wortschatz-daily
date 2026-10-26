@@ -134,3 +134,15 @@ Each Word Detail now has a **🔊 Forms** button beside Essential forms when pro
 - Forms-only buttons are omitted when the word has no pronounceable essential form. Speech queued using German (`de-DE`) browser text-to-speech, currently at 0.82 rate; playback cancels on Back, Next and closing Word Detail.
 
 iOS Safari speech engine availability and specific German voices are device dependent. This feature uses local Web Speech synthesis, not pre-recorded audio or cloud speech files. Published vocabulary, private notes, marks, review history and backup schema are unchanged.
+
+
+## Day 5 — Daily Routines, Transport, Appointments & Medical History (2026-10-26)
+
+Published as `lessons/day5.json`, registered in `lessons/catalog.json` with `expectedWords:68` and `expectedMedical:8`. General Active 25 (10 verbs, 6 adjectives/adverbs, 5 nouns, 4 function/preposition words), General Passive 35, and Medical Extra 8 (3 Active + 5 Passive). All 340 entries across Days 1–5 have unique casefolded German headwords after removal of nominative articles. No numeric corpus frequency ranks were invented.
+
+- Active verbs: `aufstehen, anfangen, anrufen, einkaufen, ausfüllen, einsteigen, aussteigen, bringen, sitzen, liegen`
+- Focus: separable verbs, transit, scheduling, prepositions (`in, nach, zu, von`), work and home
+- Medical Extra: `bluten, sich hinlegen, Haben Sie Vorerkrankungen?, der Notfall, die Beschwerden, die Untersuchung, die Behandlung, das Rezept`
+- Medical entries include separate patient-friendly and clinical German utterances.
+
+On app launch while online, a new day is automatically downloaded from the GitHub lesson catalog and opened in Today. Existing personal notes, study marks, font preferences and user-promoted Active words stay in IndexedDB and are not changed by public lesson updates. Use Settings → Check new lessons if the day does not immediately appear; avoid deleting the app or browser data before exporting a JSON backup.
