@@ -146,3 +146,19 @@ Published as `lessons/day5.json`, registered in `lessons/catalog.json` with `exp
 - Medical entries include separate patient-friendly and clinical German utterances.
 
 On app launch while online, a new day is automatically downloaded from the GitHub lesson catalog and opened in Today. Existing personal notes, study marks, font preferences and user-promoted Active words stay in IndexedDB and are not changed by public lesson updates. Use Settings → Check new lessons if the day does not immediately appear; avoid deleting the app or browser data before exporting a JSON backup.
+
+
+## Day 6 — A1 Questions, Study, Weekdays and Physical Examination (2026-10-28)
+
+Published as `lessons/day6.json`, with an entry in `lessons/catalog.json` (`expectedWords:68`, `expectedMedical:8`). 25 General Active + 35 General Passive + 8 Medical Extra (3 Active / 5 Passive).
+
+- Active verbs: `wissen, kennen, sagen, nennen, wiederholen, buchstabieren, schicken, abholen, tragen, stehen`.
+- Questions: `wer, was, wo, wann`. Learning and identity: `das Wort, der Satz, der Vorname, der Nachname, der Geburtstag`.
+- Passive words: all seven weekdays, transport arrivals/departures, school vocabulary, home, daily shopping and practical places.
+- Medical Extra: `heben, strecken, Können Sie Ihre Finger bewegen?, der Arm, die Hand, der Finger, der Fuß, das Auge`. The medical words include patient-friendly and clinical German phrases.
+
+Quality checks: 408 distinct German headwords/phrases across Days 1–6, by case-insensitive, article-stripped comparison; no identical lemmas repeated. All sections add up to 68/day, and the new Day 6 content is imported once only. Notes, learning progress, manual Passive→Active promotions and font settings remain in device-local IndexedDB.
+
+As with earlier days, priority and frequency labels are qualitative editorial judgments, *not* retrieved or computed corpus frequency statistics.
+
+Open the app online to auto-download Day 6; if necessary, use Settings → Check new lessons. Do not uninstall the iPhone Home Screen app or clear browser data before exporting a JSON backup of personal study data.
