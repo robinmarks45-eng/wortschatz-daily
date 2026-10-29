@@ -54,11 +54,15 @@ The promotion is saved as a **personal `goalMode` in IndexedDB progress**, so Gi
 
 Upload `lessons/day2.json`, `lessons/day3.json`, etc., and append corresponding items to `lessons/catalog.json` with id, path, releaseDate and revision. A standard new day needs **68 nonduplicated** entries with `track` = `general` or `medical`. The app auto-imports published lessons when online and keeps downloaded lessons locally, no copy/paste required.
 
-To edit an already published lesson, increase its catalog revision. The client currently migrates **Day 1** revisions; editing later already-imported days in place needs a future update to the migration logic.
+To edit an already published lesson, increase both its lesson revision and catalog revision. From v8, every published day can refresh in place while preserving notes, progress, review history, reading position, and manual Passive → Active promotions. Removed studied entries are archived instead of silently deleted.
 
 **GitHub only backs up published vocabulary, not personal data.** Export JSON backup from Settings and save to Files/iCloud Drive. Use it when changing devices, reinstalling Home Screen app, or after clearing website data. Safari and Home Screen PWA can have different local storage containers.
 
 No OpenAI API required. The app **downloads** newly published days automatically, but an external scheduled publisher (automation or workflow) is still needed if future daily lesson generation/upload should happen without a chat request.
+
+## Day 1–6 language audit · v8 (2026-10-29)
+
+All 408 published entries were revalidated for required German/Myanmar fields, articles/plurals, verb forms, examples, duplicate headwords, and pronounceable essential forms. The repair filled 26 missing Day 1 example translations, corrected formal `Ihr/Ihre` translations and several entry-level meaning/usage issues, prevented TTS from reading grammar labels, and generalized safe revision migration to Days 1–6. See `AUDIT-2026-10-29-MM.md` for the detailed Burmese report. Run `node tests/audit.mjs` for the repeatable core checks.
 
 ## iPhone installation
 

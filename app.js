@@ -5,6 +5,7 @@ const $=(s,root=document)=>root.querySelector(s);
 const $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const escapeHTML=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const lower=s=>String(s||'').normalize('NFC').trim().toLocaleLowerCase('de').replace(/\s+/g,' ');
+const wordKey=s=>lower(s).replace(/^(der|die|das)\s+/,'');
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const addDays=(d,n)=>{let [y,m,day]=d.split('-').map(Number);return new Date(Date.UTC(y,m-1,day+n)).toISOString().slice(0,10)};
 const typeName={verb:'Verb',noun:'Noun',adjective:'Adjective',adverb:'Adverb',function:'Function',phrase:'Phrase'};
@@ -36,17 +37,17 @@ function publicWord(w,day,i){
  if(!/^[a-z0-9_-]{1,70}$/i.test(id))throw Error('Invalid ID');
  return {...w,id,de:w.de.slice(0,160),mm:w.mm.slice(0,250),mode:w.mode==='passive'?'passive':'active',pos:['noun','verb','adjective','adverb','function','phrase'].includes(w.pos)?w.pos:'phrase'};
 }
-function migrateFirstDay(lesson,words,rev){
- const day=state.lessons.find(l=>l.id==='day1');if(!day)return false;
- const oldIds=[...day.wordIds],previous=new Map(oldIds.filter(id=>state.words[id]).map(id=>[lower(state.words[id].de),id]));
+function migratePublicDay(item,lesson,words,rev){
+ const day=state.lessons.find(l=>l.id===item.id);if(!day)return false;
+ const oldIds=[...day.wordIds],previous=new Map(oldIds.filter(id=>state.words[id]).map(id=>[wordKey(state.words[id].de),id]));
  const newIds=[],matched=new Set();
  for(const w of words){
-  const old=previous.get(lower(w.de));if(old){matched.add(old);
+  const old=oldIds.includes(w.id)?w.id:previous.get(wordKey(w.de));if(old){matched.add(old);
    if(old!==w.id){
     if(state.notes[old]&&!state.notes[w.id])state.notes[w.id]=state.notes[old];
     if(state.progress[old]&&!state.progress[w.id])state.progress[w.id]=state.progress[old];
     for(const h of state.history)if(h.id===old)h.id=w.id;
-    if(state.positions.day1===old)state.positions.day1=w.id;
+    if(state.positions[item.id]===old)state.positions[item.id]=w.id;
     delete state.notes[old];delete state.progress[old];
    }
   }
@@ -56,22 +57,22 @@ function migrateFirstDay(lesson,words,rev){
  for(const id of oldIds){
   if(matched.has(id)){if(!newIds.includes(id))delete state.words[id];continue}
   const p=state.progress[id];
-  if(state.notes[id]||(p&&p.status!=='new')||state.positions.day1===id||state.history.some(h=>h.id===id))archive.push(id);
+  if(state.notes[id]||(p&&p.status!=='new')||state.positions[item.id]===id||state.history.some(h=>h.id===id))archive.push(id);
   else{delete state.words[id];delete state.notes[id];delete state.progress[id]}
  }
  day.wordIds=newIds;day.topic=lesson.topic||day.topic;
- if(!newIds.includes(state.positions.day1))delete state.positions.day1;
+ if(!newIds.includes(state.positions[item.id]))delete state.positions[item.id];
  if(archive.length){
-  const old=state.lessons.find(l=>l.id==='day1-legacy');
+  const archiveId=item.id+'-legacy',old=state.lessons.find(l=>l.id===archiveId);
   if(old)old.wordIds=[...new Set([...old.wordIds,...archive])];
-  else state.lessons.push({id:'day1-legacy',day:'Archive',topic:'Previously studied Day 1 words',date:today(),wordIds:archive});
+  else state.lessons.push({id:archiveId,day:'Archive',topic:'Previously studied '+day.day+' words',date:today(),wordIds:archive});
  }
- state.catalogRevisions.day1=rev;return true;
+ state.catalogRevisions[item.id]=rev;return true;
 }
 function addPublicDay(item,lesson,words,rev){
  if(state.lessons.some(l=>l.id===item.id))return false;
- const seen=new Set(allWordIds().map(id=>lower(state.words[id].de))),ids=[];
- for(const w of words){if(seen.has(lower(w.de))||state.words[w.id])continue;state.words[w.id]=w;ids.push(w.id);seen.add(lower(w.de))}
+ const seen=new Set(allWordIds().map(id=>wordKey(state.words[id].de))),ids=[];
+ for(const w of words){if(seen.has(wordKey(w.de))||state.words[w.id])continue;state.words[w.id]=w;ids.push(w.id);seen.add(wordKey(w.de))}
  if(!ids.length)return false;
  state.lessons.push({id:item.id,day:String(lesson.day||item.id),topic:String(lesson.topic||'Daily vocabulary'),date:String(item.releaseDate||today()),wordIds:ids});
  state.catalogRevisions[item.id]=rev;return true;
@@ -92,7 +93,7 @@ async function syncCatalog(manual=false,repairDay1=false){
    // Critical repair: revision alone is not trustworthy if a previous fetch cached an incomplete lesson.
    const localIds=old?.wordIds?.filter(id=>state.words[id])||[];
    const expected=Number(item.expectedWords||0),expectedMedical=Number(item.expectedMedical||0);
-   const needsRepair=Boolean(item.id==='day1'&&old&&(
+   const needsRepair=Boolean(old&&(
     (expected&&localIds.length!==expected)||
     (expectedMedical&&localIds.filter(id=>state.words[id].track==='medical').length!==expectedMedical)
    ));
@@ -103,10 +104,12 @@ async function syncCatalog(manual=false,repairDay1=false){
    const lesson=await r.json();
    if(!Array.isArray(lesson.words)||!lesson.words.length||lesson.words.length>200)throw Error('Invalid '+item.id);
    const words=lesson.words.map((w,i)=>publicWord(w,item.id,i));
-   if(new Set(words.map(w=>lower(w.de))).size!==words.length||new Set(words.map(w=>w.id)).size!==words.length)throw Error('Repeated words or IDs in '+item.id);
+   if(new Set(words.map(w=>wordKey(w.de))).size!==words.length||new Set(words.map(w=>w.id)).size!==words.length)throw Error('Repeated words or IDs in '+item.id);
+   const otherKeys=new Set(state.lessons.filter(l=>l.id!==item.id&&!l.id.endsWith('-legacy')).flatMap(l=>l.wordIds).map(id=>state.words[id]).filter(Boolean).map(w=>wordKey(w.de)));
+   if(words.some(w=>otherKeys.has(wordKey(w.de))))throw Error('A word in '+item.id+' duplicates another published lesson');
    if(expected&&words.length!==expected)throw Error(item.id+' is incomplete: expected '+expected+', got '+words.length);
    if(expectedMedical&&words.filter(w=>w.track==='medical').length!==expectedMedical)throw Error(item.id+' medical section incomplete');
-   if(old&&item.id==='day1'){if(migrateFirstDay(lesson,words,rev))count++}
+   if(old){if(migratePublicDay(item,lesson,words,rev))count++}
    else if(!old){if(addPublicDay(item,lesson,words,rev)){count++;newestAdded=item.id}}
   }
   if(count){
@@ -282,7 +285,7 @@ function spokenEssentialForms(w){
   return raw.split('·').map(x=>x.replace(/\s*\([^)]*\)/g,'').trim()).filter(x=>x&&x.split(/\s+/).length<=5);
  }
  if(w.pos==='adjective'||w.pos==='adverb'||w.pos==='function'){
-  if(/(pronomen|partikel|frage|nominativ|höflich|adverb|konjunktion|negation|imperativ)/i.test(raw))return [];
+  if(/(pronomen|partikel|frage|nominativ|akkusativ|dativ|genitiv|präposition|höflich|adverb|konjunktion|negation|imperativ)/i.test(raw))return [];
   const parts=raw.split('·').map(x=>x.trim()).filter(Boolean);
   return parts.length>=2?parts.filter(x=>!/[()]/.test(x)):[];
  }
@@ -367,9 +370,9 @@ function restoreBackup(obj){if(!validState(obj)){toast('Not a compatible Wortsch
 }
 function importLesson(obj){if(!obj||!Array.isArray(obj.words)||obj.words.length<1||obj.words.length>200){toast('JSON needs a words array (1–200 items)');return}
   if(obj.words.some(w=>!w||typeof w!=='object'||typeof w.de!=='string'||!w.de.trim()||typeof w.mm!=='string'||!w.mm.trim())){toast('Every item needs German de and Myanmar mm');return}
-  const known=new Map(allWordIds().map(id=>[lower(state.words[id].de),id])),ids=[];let duplicates=0;
+  const known=new Map(allWordIds().map(id=>[wordKey(state.words[id].de),id])),ids=[];let duplicates=0;
   const words={};let seq=state.nextId||1;
-  for(const raw of obj.words){const key=lower(raw.de);if(known.has(key)){duplicates++;continue}
+  for(const raw of obj.words){const key=wordKey(raw.de);if(known.has(key)){duplicates++;continue}
     const id=`custom-${seq++}`;known.set(key,id);ids.push(id);words[id]={id,de:String(raw.de).slice(0,160),mm:String(raw.mm).slice(0,250),pos:['noun','verb','adjective','adverb','function','phrase'].includes(raw.pos)?raw.pos:'phrase',mode:raw.mode==='passive'?'passive':'active',forms:String(raw.forms||'').slice(0,240),plural:String(raw.plural||'').slice(0,160),example:String(raw.example||'').slice(0,450),translation:String(raw.translation||'').slice(0,500),pattern:String(raw.pattern||'').slice(0,250),track:raw.track==='medical'?'medical':'general',level:String(raw.level||'').slice(0,80),importance:String(raw.importance||'').slice(0,30),frequencyEstimate:String(raw.frequencyEstimate||'').slice(0,40),patientGerman:String(raw.patientGerman||'').slice(0,450),clinicalGerman:String(raw.clinicalGerman||'').slice(0,450)};
   }
   if(!ids.length){toast(`No new words: ${duplicates} duplicates`);return}
@@ -420,5 +423,10 @@ document.addEventListener('keydown',event=>{
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushNote();else if(state)syncCatalog()});
 window.addEventListener('online',()=>{if(state)syncCatalog(true)});
-$('#themeButton').addEventListener('click',()=>{if(state)toggleTheme()});
-initialize();
+if(globalThis.__WORTSCHATZ_TEST_MODE__){
+ globalThis.__WORTSCHATZ_TEST__={lower,wordKey,publicWord,spokenEssentialForms,migratePublicDay,setStateForTest:value=>{state=value},getStateForTest:()=>state};
+}
+if(typeof document!=='undefined'&&!globalThis.__WORTSCHATZ_TEST_MODE__){
+ $('#themeButton').addEventListener('click',()=>{if(state)toggleTheme()});
+ initialize();
+}
