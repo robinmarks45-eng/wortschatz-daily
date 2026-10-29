@@ -29,7 +29,7 @@ try{
   const get=(db)=>new Promise((resolve,reject)=>{const request=db.transaction('data','readonly').objectStore('data').get('state');request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)});
   const put=(db,value)=>new Promise((resolve,reject)=>{const tx=db.transaction('data','readwrite');tx.objectStore('data').put(value,'state');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});
   const db=await open(),state=await get(db);
-  state.catalogRevisions.day2=1;
+  state.catalogRevisions.day2=2;
   state.words['d2-028'].translation='stale cached value';
   state.notes['d2-028']='keep this note';
   state.progress['d2-028']={status:'known',reps:2,goalMode:'active'};
@@ -44,7 +44,7 @@ try{
   db.close();
   return {revision:state.catalogRevisions.day2,translation:state.words['d2-028'].translation,note:state.notes['d2-028'],status:state.progress['d2-028'].status,goalMode:state.progress['d2-028'].goalMode};
  });
- assert.deepEqual(migrated,{revision:2,translation:'လူကြီးမင်းရဲ့သားက အသက်ရှစ်နှစ်ရှိပြီ။',note:'keep this note',status:'known',goalMode:'active'});
+ assert.deepEqual(migrated,{revision:3,translation:'လူကြီးမင်းရဲ့သားက အသက်ရှစ်နှစ်ရှိပြီ။',note:'keep this note',status:'known',goalMode:'active'});
  console.log('PASS: browser loaded 408 words, detail/TTS controls work, and Day 2 revision preserved private state');
 }finally{
  await browser.close();

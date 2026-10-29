@@ -5,7 +5,7 @@
     {
       "id": "day1",
       "path": "lessons/day1.json",
-      "revision": 5,
+      "revision": 6,
       "releaseDate": "2026-10-25",
       "expectedWords": 68,
       "expectedMedical": 8,
@@ -29,7 +29,7 @@
     {
       "id": "day2",
       "path": "lessons/day2.json",
-      "revision": 2,
+      "revision": 3,
       "releaseDate": "2026-10-25",
       "expectedWords": 68,
       "expectedMedical": 8,
@@ -53,7 +53,7 @@
     {
       "id": "day3",
       "path": "lessons/day3.json",
-      "revision": 2,
+      "revision": 3,
       "releaseDate": "2026-10-25",
       "expectedWords": 68,
       "expectedMedical": 8,
@@ -77,7 +77,7 @@
     {
       "id": "day4",
       "path": "lessons/day4.json",
-      "revision": 2,
+      "revision": 3,
       "releaseDate": "2026-10-25",
       "expectedWords": 68,
       "expectedMedical": 8,
@@ -101,7 +101,7 @@
     {
       "id": "day5",
       "path": "lessons/day5.json",
-      "revision": 2,
+      "revision": 3,
       "releaseDate": "2026-10-26",
       "expectedWords": 68,
       "expectedMedical": 8,
@@ -125,7 +125,7 @@
     {
       "id": "day6",
       "path": "lessons/day6.json",
-      "revision": 2,
+      "revision": 3,
       "releaseDate": "2026-10-28",
       "expectedWords": 68,
       "expectedMedical": 8,

@@ -2,7 +2,7 @@
   "id": "day3",
   "day": "Day 3",
   "topic": "A1 Foundation · Shopping, Directions, Food & Body Parts",
-  "revision": 2,
+  "revision": 3,
   "selectionMethod": "Editorial A1 curriculum, applying Goethe/CEFR, spoken and written usage, personal usefulness and grammar as qualitative guide; no independently verified per-word corpus rank.",
   "rankingModel": {
     "version": "hybrid-proposed-1",
@@ -1074,7 +1074,7 @@
     {
       "id": "d3-059",
       "de": "das Hähnchen",
-      "mm": "ကြက်သား / ကြက်ကောင်",
+      "mm": "ကြက်သား / စားသုံးရန် ကြက်ကောင်ငယ်",
       "pos": "noun",
       "mode": "passive",
       "forms": "",

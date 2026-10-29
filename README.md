@@ -60,9 +60,9 @@ To edit an already published lesson, increase both its lesson revision and catal
 
 No OpenAI API required. The app **downloads** newly published days automatically, but an external scheduled publisher (automation or workflow) is still needed if future daily lesson generation/upload should happen without a chat request.
 
-## Day 1–6 language audit · v8 (2026-10-29)
+## Day 1–6 comprehension re-audit · v9 (2026-10-29)
 
-All 408 published entries were revalidated for required German/Myanmar fields, articles/plurals, verb forms, examples, duplicate headwords, and pronounceable essential forms. The repair filled 26 missing Day 1 example translations, corrected formal `Ihr/Ihre` translations and several entry-level meaning/usage issues, prevented TTS from reading grammar labels, and generalized safe revision migration to Days 1–6. See `AUDIT-2026-10-29-MM.md` for the detailed Burmese report. Run `node tests/audit.mjs` for the repeatable core checks.
+All 408 published entries were re-read for learner comprehension after the first structural audit. Version 9 adds 12 verified plurals with usage notes where singular is normal in the lesson context, teaches `die Beschwerde → die Beschwerden` as a proper singular/plural pair, and clarifies ambiguous German/Myanmar meanings and examples such as `Freund`, `Rechnung`, `Puls`, `Gleis`, `Stift`, and `Fuß`. It also retains the first audit's TTS cleanup and safe revision migration. See `AUDIT-2026-10-29-MM.md` and `COMPREHENSION-REAUDIT-2026-10-29-MM.md`. Run `node tests/audit.mjs` for repeatable checks.
 
 ## iPhone installation
 

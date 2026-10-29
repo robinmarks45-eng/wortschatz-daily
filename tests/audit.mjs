@@ -11,11 +11,26 @@ const days=catalog.lessons.map(item=>({item,data:readJson(item.path)}));
 const allowedPos=new Set(['noun','verb','adjective','adverb','function','phrase']);
 const normalized=value=>String(value).normalize('NFC').trim().toLocaleLowerCase('de').replace(/^(der|die|das)\s+/,'').replace(/\s+/g,' ');
 const allWords=days.flatMap(({item,data})=>data.words.map(word=>({...word,dayId:item.id})));
+const byId=id=>allWords.find(word=>word.id===id);
 
 assert.equal(days.length,6,'catalog must contain Day 1 through Day 6');
 assert.equal(allWords.length,408,'published vocabulary total must remain 408');
 assert.equal(new Set(allWords.map(word=>word.id)).size,408,'word IDs must be globally unique');
 assert.equal(new Set(allWords.map(word=>normalized(word.de))).size,408,'article-stripped German headwords must be globally unique');
+
+const verifiedPlurals={
+ 'a1core-19':'die Zeiten (je nach Bedeutung; „Zeit haben“ meist ohne Plural)',
+ 'a1core-44':'die Arbeiten (Aufgaben/Werke; „zur Arbeit“ meist ohne Plural)',
+ 'a1core-50':'die Gelder (bestimmte Geldbeträge/Mittel; Alltag meist ohne Plural)',
+ 'a1core-54':'die Frühstücke','d2-035':'die Kaffees','d2-036':'die Tees (Sorten)',
+ 'd2-065':'die Blutdrücke (fachsprachlich; auch: die Blutdrucke)','d2-066':'die Pulse',
+ 'd4-017':'die Hilfen','d4-052':'die Mittagessen','d4-053':'die Abendessen','d5-020':'die Urlaube'
+};
+for(const [id,plural] of Object.entries(verifiedPlurals))assert.equal(byId(id)?.plural,plural,`${id}: verified plural must not regress`);
+assert.equal(byId('d5-065')?.de,'die Beschwerde','medical entry must teach the singular dictionary lemma');
+assert.equal(byId('d5-065')?.plural,'die Beschwerden (medizinisch meist im Plural)','medical plural usage must be explicit');
+assert.match(byId('d5-058')?.translation,/ရထားလမ်းနံပါတ် ၃/,'Gleis must be translated as track, not platform');
+assert.match(byId('d2-066')?.translation,/သွေးခုန်စည်းချက်/,'regelmäßiger Puls must describe a regular pulse rhythm');
 
 for(const {item,data} of days){
  assert.equal(data.id,item.id,`${item.id}: lesson ID must match catalog`);
