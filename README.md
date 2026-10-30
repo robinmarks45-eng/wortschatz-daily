@@ -166,3 +166,17 @@ Quality checks: 408 distinct German headwords/phrases across Days 1–6, by case
 As with earlier days, priority and frequency labels are qualitative editorial judgments, *not* retrieved or computed corpus frequency statistics.
 
 Open the app online to auto-download Day 6; if necessary, use Settings → Check new lessons. Do not uninstall the iPhone Home Screen app or clear browser data before exporting a JSON backup of personal study data.
+
+
+## Day 7 — Leisure, Travel, Places & Breathing Examination (2026-10-30)
+
+Published `lessons/day7.json` with `lessons/catalog.json` entry (`expectedWords:68`, `expectedMedical:8`) against the **current corrected** Day 1–6 revision files (Day 1 v6, Days 2–6 v3). Exactly **68 new words** — 25 General Active (10 verbs, 6 adjectives/adverbs, 5 nouns, 4 question words), 35 General Passive, and 8 Medical Extra (3 Active + 5 Passive). In total, **476 distinct headword entries across seven days**: 420 General and 56 Medical.
+
+- Active verbs: `arbeiten, reisen, besuchen, umsteigen, ankommen, abfahren, putzen, waschen, planen, erklären`. This includes separable verbs and a Dative/Akkusative example (`erklären`).
+- Question words: `wie, warum, woher, wohin`.
+- Passive nouns cover leisure, travel destinations, weather, public holidays, and work.
+- Medical Extra: `einatmen, ausatmen, sich setzen, das Herz, die Lunge, der Hals, die Schulter, das Handgelenk`. Each medical entry includes patient-friendly German and a professional clinical sentence.
+
+Validation: zero duplicate headwords against latest corrected Day 1–6 (article-insensitive, normalized case), 68 unique entries, noun article/plural schema, verb conjugation schema, and patient/clinical fields checked. Simulated auto-import from six installed lessons to seven successfully brought in all 68 new entries without changing local notes, statuses, user-specific Active promotion, or list font size; reopening did not duplicate the lesson. Language content has been editorially reviewed but no actual speech synthesis audio can be verified on an individual user's iPhone, so report TTS problems by specific word/form.
+
+The app uses local `de-DE` text-to-speech with audio buttons for the main word, essential forms, and combined Word + Forms. Data backup of personal notes and progress remains a separate user action.
