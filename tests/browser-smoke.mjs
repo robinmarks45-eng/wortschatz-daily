@@ -10,7 +10,7 @@ const page=await browser.newPage();
 try{
  await page.goto(base,{waitUntil:'networkidle'});
  await page.waitForFunction(()=>document.querySelectorAll('tr[data-id]').length===68);
- assert.equal(await page.locator('#daySelect option').count(),6,'all six lessons should load');
+ assert.equal(await page.locator('#daySelect option').count(),7,'all seven lessons should load');
 
  await page.selectOption('#daySelect','day6');
  await page.locator('tr[data-id="d6-067"]').click();
@@ -45,7 +45,7 @@ try{
   return {revision:state.catalogRevisions.day2,translation:state.words['d2-028'].translation,note:state.notes['d2-028'],status:state.progress['d2-028'].status,goalMode:state.progress['d2-028'].goalMode};
  });
  assert.deepEqual(migrated,{revision:3,translation:'လူကြီးမင်းရဲ့သားက အသက်ရှစ်နှစ်ရှိပြီ။',note:'keep this note',status:'known',goalMode:'active'});
- console.log('PASS: browser loaded 408 words, detail/TTS controls work, and Day 2 revision preserved private state');
+ console.log('PASS: browser loaded 476 words, detail/TTS controls work, and Day 2 revision preserved private state');
 }finally{
  await browser.close();
 }
