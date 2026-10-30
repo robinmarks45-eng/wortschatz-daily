@@ -1114,8 +1114,8 @@
       "mode": "active",
       "forms": "ich drücke · du drückst · er drückt",
       "plural": "",
-      "example": "Ich drücke jetzt leicht auf Ihren Bauch.",
-      "translation": "အခု လူကြီးမင်းရဲ့ ဝမ်းဗိုက်ကို ဖြည်းဖြည်းလေး ဖိစမ်းမယ်။",
+      "example": "Ich drücke jetzt vorsichtig auf Ihren Bauch.",
+      "translation": "အခု လူကြီးမင်းရဲ့ ဝမ်းဗိုက်ကို သတိထားပြီး ဖိစမ်းပါမယ်။",
       "pattern": "auf + Akkusativ drücken",
       "track": "medical",
       "level": "A1–B1 · Patient German",
@@ -1203,7 +1203,7 @@
       "frequencyEstimate": "situational",
       "frequencyStatus": "editorial_estimate",
       "rankingEvidence": "Editorial judgment, not verified numeric corpus frequency",
-      "patientGerman": "Ist Ihre Blase voll?",
+      "patientGerman": "Haben Sie das Gefühl, dass Ihre Blase voll ist?",
       "clinicalGerman": "Die Harnblase ist im Ultraschall gut gefüllt."
     },
     {
@@ -1215,7 +1215,7 @@
       "forms": "",
       "plural": "— (im Alltag meist Singular)",
       "example": "Der Urin ist dunkel.",
-      "translation": "ဆီးအရောင်က မည်းနက်နေတယ်။",
+      "translation": "ဆီးအရောင်က ရင့်နေတယ်။",
       "pattern": "Urin untersuchen",
       "track": "medical",
       "level": "A1–B1 · Patient German",
