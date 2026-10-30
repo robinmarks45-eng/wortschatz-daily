@@ -180,3 +180,16 @@ Published `lessons/day7.json` with `lessons/catalog.json` entry (`expectedWords:
 Validation: zero duplicate headwords against latest corrected Day 1–6 (article-insensitive, normalized case), 68 unique entries, noun article/plural schema, verb conjugation schema, and patient/clinical fields checked. Simulated auto-import from six installed lessons to seven successfully brought in all 68 new entries without changing local notes, statuses, user-specific Active promotion, or list font size; reopening did not duplicate the lesson. Language content has been editorially reviewed but no actual speech synthesis audio can be verified on an individual user's iPhone, so report TTS problems by specific word/form.
 
 The app uses local `de-DE` text-to-speech with audio buttons for the main word, essential forms, and combined Word + Forms. Data backup of personal notes and progress remains a separate user action.
+
+
+## Day 8 — Household, Daily Activities, Appointments & Clinical Questions (2026-10-31)
+
+Published in `lessons/day8.json` and registered in `lessons/catalog.json`. Adds 68 entries: General Active 25 (10 verbs, 6 adjectives/adverbs, 5 nouns, 4 prepositions), General Passive 35, and Medical Extra 8 (3 Active, 5 Passive). Total published Days 1–8: **544 unique headword entries** (480 General + 64 Medical). German lemma/case-normalized headwords, including noun-article stripping, were compared against the latest corrected Days 1–7 and the new day itself.
+
+- General Active verbs: `spielen, laufen, schwimmen, tanzen, telefonieren, benutzen, vergessen, verlieren, aufräumen, vereinbaren`.
+- Other Active items: `ruhig, nervös, glücklich, traurig, bereit, selten, der Anfang, das Ende, der Alltag, die Gesundheit, die Verabredung, bei, aus, ohne, gegen`.
+- General Passive: 35 distinct household, living situation, social events and everyday objects, with gender and plural entries.
+- Medical Extra: `drücken, drehen, Haben Sie Schmerzen beim Wasserlassen?, die Niere, die Blase, der Urin, der Verband, das Blut`, with patient-friendly and clinical German examples.
+- Device TTS uses the German headword and essential grammar forms. No audio is prerecorded and an actual iPhone voice quality/phoneme check is not possible in automated Node tests.
+
+The app automatically finds new lessons from the catalog when online; alternatively go to Settings → Check new lessons. Local notes, marks, review history, personal Active promotions and font settings are preserved. Learning data remains device-local unless the user exports a separate JSON backup. The "frequency" and importance categories are qualitative editorial study choices, not numeric corpus rankings.
