@@ -13,10 +13,12 @@ const normalized=value=>String(value).normalize('NFC').trim().toLocaleLowerCase(
 const allWords=days.flatMap(({item,data})=>data.words.map(word=>({...word,dayId:item.id})));
 const byId=id=>allWords.find(word=>word.id===id);
 
-assert.equal(days.length,6,'catalog must contain Day 1 through Day 6');
-assert.equal(allWords.length,408,'published vocabulary total must remain 408');
-assert.equal(new Set(allWords.map(word=>word.id)).size,408,'word IDs must be globally unique');
-assert.equal(new Set(allWords.map(word=>normalized(word.de))).size,408,'article-stripped German headwords must be globally unique');
+assert.ok(days.length>=6,'catalog must include foundational Days 1–6');
+assert.deepEqual(days.map(({item})=>item.id),Array.from({length:days.length},(_,i)=>'day'+(i+1)),'published days must be sequential, with no missing days');
+const totalExpected=days.length*68;
+assert.equal(allWords.length,totalExpected,'published vocabulary total must be 68 per day');
+assert.equal(new Set(allWords.map(word=>word.id)).size,totalExpected,'word IDs must be globally unique');
+assert.equal(new Set(allWords.map(word=>normalized(word.de))).size,totalExpected,'article-stripped German headwords must be globally unique');
 
 const verifiedPlurals={
  'a1core-19':'die Zeiten (je nach Bedeutung; „Zeit haben“ meist ohne Plural)',
@@ -106,4 +108,4 @@ assert.equal(migrated.positions.day2,replacement.id,'reading position must follo
 assert.equal(migrated.history[0].id,replacement.id,'review history must follow an ID migration');
 assert.equal(migrated.catalogRevisions.day2,2,'catalog revision must advance after migration');
 
-console.log('PASS: 408 entries, six lesson schemas, uniqueness, grammar metadata, TTS forms, and progress-preserving migration');
+console.log(`PASS: ${totalExpected} entries, ${days.length} lesson schemas, uniqueness, grammar metadata, TTS forms, and progress-preserving migration`);
