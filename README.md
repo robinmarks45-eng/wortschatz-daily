@@ -193,3 +193,18 @@ Published in `lessons/day8.json` and registered in `lessons/catalog.json`. Adds 
 - Device TTS uses the German headword and essential grammar forms. No audio is prerecorded and an actual iPhone voice quality/phoneme check is not possible in automated Node tests.
 
 The app automatically finds new lessons from the catalog when online; alternatively go to Settings → Check new lessons. Local notes, marks, review history, personal Active promotions and font settings are preserved. Learning data remains device-local unless the user exports a separate JSON backup. The "frequency" and importance categories are qualitative editorial study choices, not numeric corpus rankings.
+
+
+## Day 9 — Clothing Shopping, Spatial Prepositions & Joint Examination (2026-11-02)
+
+Published in `lessons/day9.json` and registered in `lessons/catalog.json`. This adds 68 new vocabulary entries: General Active 25 (10 verbs, 6 adjectives/adverbs, 5 nouns and 4 two-way prepositions), General Passive 35, and Medical Extra 8 (3 Active + 5 Passive). All **612 entries across Days 1–9** have distinct article-stripped, casefolded German headwords/phrases (540 General and 72 Medical).
+
+- Active verbs: `anziehen, ausziehen, anprobieren, passen, wechseln, einschalten, ausschalten, denken, erzählen, lachen`, with present-tense ich/du/er forms and practical example translations.
+- Adjectives/adverbs: `bequem, eng, weit, hell, dunkel, vielleicht`.
+- Essential two-way prepositions: `vor, hinter, über, unter` (Dativ for static location and Akkusativ for direction).
+- Shopping nouns and product vocabulary: `der Laden, die Kasse, der Kunde, die Auswahl, das Angebot` plus 35 passive nouns on clothing, receipts, returns, and product guarantees.
+- Medical Extra: `abtasten, beugen, verbinden, das Knie, der Ellenbogen, der Knöchel, die Haut, die Spritze`. Each contains a natural patient-facing sentence and clinical German phrasing.
+
+Quality controls: 68 expected words (25/35/3/5), no duplicate IDs or headwords with prior days, noun article/plural format, present-tense verb forms, and German-only essential-form TTS extraction validated. An auto-sync simulation verified that a local 8-day user state receives all 68 words and Medical 8, selects Day 9, and preserves notes, Known status, manually promoted Active mode, saved reading position and text size, without reimporting on the next sync.
+
+Important: TTS uses the iPhone/browser German de-DE voice; automated tests verify the text sent to TTS, **not real acoustic pronunciation** on the user's device. Importance and frequency tiers are editorial estimates, not independent corpus counts. User data remains device-local unless a separate export backup is performed.
