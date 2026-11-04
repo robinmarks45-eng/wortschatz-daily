@@ -208,3 +208,19 @@ Published in `lessons/day9.json` and registered in `lessons/catalog.json`. This 
 Quality controls: 68 expected words (25/35/3/5), no duplicate IDs or headwords with prior days, noun article/plural format, present-tense verb forms, and German-only essential-form TTS extraction validated. An auto-sync simulation verified that a local 8-day user state receives all 68 words and Medical 8, selects Day 9, and preserves notes, Known status, manually promoted Active mode, saved reading position and text size, without reimporting on the next sync.
 
 Important: TTS uses the iPhone/browser German de-DE voice; automated tests verify the text sent to TTS, **not real acoustic pronunciation** on the user's device. Importance and frequency tiers are editorial estimates, not independent corpus counts. User data remains device-local unless a separate export backup is performed.
+
+
+## Day 10 — Daily Routines, Work, Relationships, Location & Clinical Symptoms (2026-11-04)
+
+Published `lessons/day10.json` and registered it in `lessons/catalog.json` (`revision:1`, `expectedWords:68`, `expectedMedical:8`). Exactly 25 General Active, 35 General Passive, and 8 Medical Extra (3 active + 5 passive) terms. Days 1–10 now contain **680 distinct article-normalized, case-insensitive German headword entries**: 600 General and 80 Medical.
+
+- General active verbs: `aufwachen, duschen, frühstücken, sich freuen, einladen, mitbringen, mitkommen, feiern, hoffen, glauben`.
+- General active adjectives/adverb: `wach, pünktlich, sicher, gefährlich, vorsichtig, bald`.
+- General active nouns: `die Idee, der Wunsch, die Zukunft, der Grund, die Meinung`.
+- General active two-way prepositions: `an, auf, neben, zwischen`.
+- General passive nouns cover work, commute, personal relationships, daily life and healthcare workplaces.
+- Medical Extra: `niesen, sich übergeben, kontrollieren, der Durchfall, die Verstopfung, das Erbrechen, die Entzündung, die Ohnmacht`. Every medical entry includes patient-friendly and clinical German utterances.
+
+Validation covers category counts, noun gender/plural structure, three ich/du/er forms for verbs, missing fields, duplicate IDs/entries, and text extraction for word/essential-form TTS (not device-level audio). A simulated app auto-import preserved a Day 9 user's notes, known/progress state, manually promoted Active word, selected reading position, font setting and theme; repeat sync did not re-download.
+
+Frequency tags are qualitative editorial study judgments, not independently measured ranks. The app uses the device's German text-to-speech; acoustics and voice selection must be checked on the actual device. Local study data should be exported before deleting the app or clearing site storage.
