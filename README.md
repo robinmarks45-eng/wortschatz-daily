@@ -224,3 +224,18 @@ Published `lessons/day10.json` and registered it in `lessons/catalog.json` (`rev
 Validation covers category counts, noun gender/plural structure, three ich/du/er forms for verbs, missing fields, duplicate IDs/entries, and text extraction for word/essential-form TTS (not device-level audio). A simulated app auto-import preserved a Day 9 user's notes, known/progress state, manually promoted Active word, selected reading position, font setting and theme; repeat sync did not re-download.
 
 Frequency tags are qualitative editorial study judgments, not independently measured ranks. The app uses the device's German text-to-speech; acoustics and voice selection must be checked on the actual device. Local study data should be exported before deleting the app or clearing site storage.
+
+
+## Day 11 — Communication, Appointments, City Life & Vital Signs (2026-11-07)
+
+Published `lessons/day11.json` and updated `lessons/catalog.json` with `revision: 1`, `expectedWords: 68`, `expectedMedical: 8`. Day 11 has 25 General Active, 35 General Passive and 8 Medical Extra (3 Active + 5 Passive). Days 1–11 total **748 article-normalized distinct vocabulary entries** (660 General + 88 Medical).
+
+- Active verbs: `bekommen, erreichen, reservieren, verschieben, absagen, unterschreiben, benötigen, entscheiden, empfehlen, vorbereiten`.
+- Adjective/adverb study: `möglich, nötig, verfügbar, besetzt, dringend, sofort`.
+- Useful causal/contrast linking: `weil, denn, deshalb, trotzdem`, with deliberately contrasted sentence structures.
+- Passive nouns: official letters, signed records, appointments at public offices, city travel, digital forms, and administration, including `der Empfang`, `die Ausländerbehörde`, `die Frist`, `das Bürgerbüro`.
+- Medical Extra: `prüfen, zählen, Fällt Ihnen das Atmen schwer?, die Atemfrequenz, die Sauerstoffsättigung, das Stethoskop, das Thermometer, der Herzschlag`. Each medical entry includes patient-friendly and clinical German.
+
+Day 11 QA confirms the 25/35/3/5 split, no duplicate German headwords against Days 1–10 under article-stripping casefold normalization, complete noun articles/plural and verb conjugation schema, German text sent to TTS, and no medical grammar labels accidentally spoken. Simulated new lesson import preserves user notes, known status, Active promotion, saved position, font size and theme, and does not repeat on subsequent sync.
+
+Frequency tier fields are editorial estimates rather than measured corpus scores. Automated TTS checks validate *the text to be spoken*, not an iPhone speaker or installed German voice. Notes and study progress are local; export a backup before clearing browser storage.
