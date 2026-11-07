@@ -239,3 +239,18 @@ Published `lessons/day11.json` and updated `lessons/catalog.json` with `revision
 Day 11 QA confirms the 25/35/3/5 split, no duplicate German headwords against Days 1–10 under article-stripping casefold normalization, complete noun articles/plural and verb conjugation schema, German text sent to TTS, and no medical grammar labels accidentally spoken. Simulated new lesson import preserves user notes, known status, Active promotion, saved position, font size and theme, and does not repeat on subsequent sync.
 
 Frequency tier fields are editorial estimates rather than measured corpus scores. Automated TTS checks validate *the text to be spoken*, not an iPhone speaker or installed German voice. Notes and study progress are local; export a backup before clearing browser storage.
+
+
+## Day 12 — Food, Shopping, Money, Time & Symptom Questions (2026-11-07)
+
+Published `lessons/day12.json` and registered it in `lessons/catalog.json` (revision 1; 68 new German headwords/phrases: 25 General Active + 35 General Passive + 8 Medical Extra, of which 3 are active and 5 passive). Days 1–12 now have **816 distinct article-normalized German headwords/phrases**: 720 General and 96 Medical.
+
+- Active verbs: `schmecken, probieren, teilen, fehlen, gehören, leihen, sparen, verdienen, überweisen, erledigen`, including useful dative constructions and money transfer.
+- Adjectives/adverbs: `lecker, satt, salzig, süß, zufrieden, besonders`; useful nouns: `die Menge, der Betrag, die Mahlzeit, die Hälfte, die Kosten`.
+- Time prepositions: `seit, bis, ab, um` with real-life example sentences and explicit case/usage patterns.
+- Passive nouns: 35 culinary, grocery, kitchen and payment concepts, including gender, natural plurals or a declaration for normally uncountable nouns.
+- Medical Extra: `schwitzen, frieren, Haben Sie Schmerzen beim Atmen?, die Kopfschmerzen, die Bauchschmerzen, die Müdigkeit, der Appetit, die Infektion`, with patient-friendly questions and clinical German equivalents.
+
+QA checked: allocation (25/35/3/5), no duplicate German article-stripped headwords among the full 816, complete entry fields, noun article and plural conventions, present-tense verb forms, textual TTS inflections (including the additional medical question variant), and app syntax. Simulated app auto-sync imported Day 12 exactly once and maintained existing personal notes, learned/Active statuses, saved reading position, font size and theme.
+
+All frequency tiers are editorial teaching priorities, **not measured numeric corpus frequency**. Device-based TTS quality cannot be verified from the automated German-text checks. Personal progress is stored locally; export a backup before clearing the iPhone's app or browser storage.
