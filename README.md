@@ -254,3 +254,18 @@ Published `lessons/day12.json` and registered it in `lessons/catalog.json` (revi
 QA checked: allocation (25/35/3/5), no duplicate German article-stripped headwords among the full 816, complete entry fields, noun article and plural conventions, present-tense verb forms, textual TTS inflections (including the additional medical question variant), and app syntax. Simulated app auto-sync imported Day 12 exactly once and maintained existing personal notes, learned/Active statuses, saved reading position, font size and theme.
 
 All frequency tiers are editorial teaching priorities, **not measured numeric corpus frequency**. Device-based TTS quality cannot be verified from the automated German-text checks. Personal progress is stored locally; export a backup before clearing the iPhone's app or browser storage.
+
+
+## Day 13 — Housing, Registration, Work & Medication Safety (2026-11-09)
+
+Published as `lessons/day13.json` and added to `lessons/catalog.json`, revision 1, with 68 new entries (25 General Active, 35 General Passive, 3 Medical Active, 5 Medical Passive). Days 1–13 now total **884 distinct article-normalized headword/phrase entries**: 780 General + 104 Medical.
+
+- Active verbs: `ändern, mieten, umziehen, sich anmelden, abgeben, hochladen, ausdrucken, kündigen, verlängern, einrichten` (with present-tense forms and accurate separable/reflexive constructions).
+- Adjectives/adverbs: `allein, gemeinsam, kostenlos, gültig, regelmäßig, voll`.
+- Active nouns: `der Umzug, der Mietvertrag, die Änderung, die Erlaubnis, der Zugang`; possessive determiners `mein, dein, unser, euer` and their inflected essentials.
+- Passive nouns: 35 practical rental, residential registration, salary and everyday-building terms, including `der Aufenthaltstitel, die Nebenkosten, die Warmmiete, die Meldebescheinigung, die Staatsangehörigkeit, das Bruttogehalt`.
+- Medical Extra: `impfen, desinfizieren, Nehmen Sie regelmäßig Medikamente?, die Impfung, die Dosis, die Nebenwirkung, die Diagnose, das Symptom`. All eight include patient-friendly and clinical German examples.
+
+QA: 68 entries total, 25/35/3/5 split, zero casefolded article-stripped headword collisions across all 884 published entries, required metadata and noun article/plural fields, present-tense conjugations, and expected text extracted for iPhone German TTS. Simulated auto-import from Days 1–12 to Day 13 added exactly 68 words (8 medical) with no duplicate import, and preserved existing user notes, study progress, Active promotion, reading position, theme and list font size. German TTS tests validate text submitted to the browser voice engine, not actual acoustic output on an individual iPhone.
+
+Priority/frequency tiers are qualitative editorial judgments, not numeric corpus measurements. Personal study notes and progress remain device-local; export backups before clearing Safari/site storage or uninstalling the home-screen app.
