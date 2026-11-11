@@ -269,3 +269,18 @@ Published as `lessons/day13.json` and added to `lessons/catalog.json`, revision 
 QA: 68 entries total, 25/35/3/5 split, zero casefolded article-stripped headword collisions across all 884 published entries, required metadata and noun article/plural fields, present-tense conjugations, and expected text extracted for iPhone German TTS. Simulated auto-import from Days 1–12 to Day 13 added exactly 68 words (8 medical) with no duplicate import, and preserved existing user notes, study progress, Active promotion, reading position, theme and list font size. German TTS tests validate text submitted to the browser voice engine, not actual acoustic output on an individual iPhone.
 
 Priority/frequency tiers are qualitative editorial judgments, not numeric corpus measurements. Personal study notes and progress remain device-local; export backups before clearing Safari/site storage or uninstalling the home-screen app.
+
+
+## Day 14 — Communication, Job Applications, Work & Medical Results (2026-11-11)
+
+Published `lessons/day14.json` and added the day to `lessons/catalog.json`, revision 1. Exactly **68 new vocabulary entries**: 25 General Active, 35 General Passive, and Medical Extra 8 (3 Active + 5 Passive). Days 1–14 total **952 casefolded, article-normalized distinct headwords/phrases**: 840 General and 112 Medical.
+
+- Active verbs: `aufhören, versuchen, vergleichen, auswählen, sich erinnern, sich beschweren, anbieten, zusagen, ablehnen, teilnehmen`. Includes separable verbs, reflexive verbs and case-government examples.
+- Everyday descriptors: `trocken, nass, deutlich, geduldig, ähnlich, wahrscheinlich`. Useful nouns: `der Vorteil, der Nachteil, die Lösung, das Ergebnis, der Vorschlag`.
+- Essential A2 subordinate clauses: `wenn, dass, als, ob`, each with a simple grammatically correct clause showing verb-final order.
+- General Passive: 35 work, application, qualifications, contract, employee-rights, payslip and professional-life nouns with articles, plurals and natural German examples. Note `Krankmeldung` (notification of illness) differs from `AU-Bescheinigung` (medical evidence of incapacity for work).
+- Medical Extra: `verabreichen, beobachten, auftragen, der Befund, die Blutprobe, die Überweisung, die Dosierung, das Labor`, each with patient-facing and clinical German examples. `Überweisung` here means a medical referral; in finance it also means a bank transfer.
+
+Testing: 952 unique words/IDs (article-insensitive and case-normalized), required fields and daily allocation, article/plural formats, present-tense verb conjugation schema, text passed to TTS, and JavaScript syntax. Simulated app auto-import from 13 to 14 days inserted exactly 68 words, kept notes, Known/progress status, user-promoted Active mode, reading position, theme and font size, and avoided duplicate import on the next sync. These tests cannot verify an actual iPhone German voice's acoustic quality.
+
+Frequency tiers are qualitative editorial judgments, not computed corpus ranks. Local study data remains on the device until explicitly exported; back up progress before clearing local browser/app data.
