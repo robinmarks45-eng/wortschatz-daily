@@ -2,7 +2,7 @@
   "id": "day17",
   "day": "Day 17",
   "topic": "A1–A2 · Perfekt in Everyday German, Practical Administration & Clinical Documentation",
-  "revision": 1,
+  "revision": 2,
   "selectionMethod": "Editorial A1–A2 daily vocabulary focused on Perfekt, everyday adverbs, Germany administration/workflow words, and patient-facing medical language. Frequency estimates are qualitative, not numerical corpus rankings.",
   "rankingModel": {
     "version": "hybrid-proposed-1",
@@ -32,7 +32,7 @@
       "mm": "ဖြစ်ပျက်သည်",
       "pos": "verb",
       "mode": "active",
-      "forms": "ich passiere · es passiert · ist passiert",
+      "forms": "es passiert · es passierte · ist passiert",
       "plural": "",
       "example": "Was ist gestern passiert?",
       "translation": "မနေ့က ဘာဖြစ်ခဲ့တာလဲ။",
