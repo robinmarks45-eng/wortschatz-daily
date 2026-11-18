@@ -389,7 +389,7 @@
     {
       "id": "day17",
       "path": "lessons/day17.json",
-      "revision": 1,
+      "revision": 2,
       "releaseDate": "2026-11-18",
       "expectedWords": 68,
       "expectedMedical": 8,
